@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
+import ReactConfetti from "react-confetti";
+import axios from "axios";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import Attendance from "./Attendance";
 import SalarySheet from "./SalarySheet";
@@ -8,7 +10,7 @@ import ViewAttendance from "./ViewAttendance";
 import { IoIosLogOut, IoIosPersonAdd } from "react-icons/io";
 import { LuNotebookPen } from "react-icons/lu";
 import { MdOutlinePageview, MdKeyboardArrowDown, MdKeyboardArrowRight, MdDashboard } from "react-icons/md";
-import { FaReceipt, FaCalendarAlt, FaRegIdCard, FaExclamationTriangle, FaTimes, FaSignOutAlt, FaChartPie, FaArrowUp, FaArrowDown, FaMoon, FaSun, FaFileAlt } from "react-icons/fa";
+import { FaReceipt, FaCalendarAlt, FaRegIdCard, FaExclamationTriangle, FaTimes, FaSignOutAlt, FaChartPie, FaArrowUp, FaArrowDown, FaMoon, FaSun, FaFileAlt, FaBell } from "react-icons/fa";
 import { BiSolidSpreadsheet } from "react-icons/bi";
 import { HiMenu, HiX } from "react-icons/hi";
 import { useApp } from "../../context/AppContext";
@@ -19,6 +21,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearSca
 import { Pie, Bar } from 'react-chartjs-2';
 import "./animations.css";
 import DashoBoardRouter from "./DashboardRouter/DashoBoardRouter";
+import Reminders from "./Reminders";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
@@ -42,6 +45,25 @@ const scrollbarStyles = `
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [reminders, setReminders] = useState([]);
+  const [showReminderPopup, setShowReminderPopup] = useState(false);
+  const [currentReminder, setCurrentReminder] = useState(null);
+  const [windowDimensions, setWindowDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
+  
+  // Update window dimensions when window is resized
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  const [birthdayEmployees, setBirthdayEmployees] = useState([]);
+  const [showBirthdayPopup, setShowBirthdayPopup] = useState(false);
   const { fetchAllEmp, emp, logoutUser, isDarkMode, toggleTheme } = useApp();
   
   // Add scrollbar styles to document head
@@ -83,12 +105,96 @@ const Dashboard = () => {
   const [logoLoadAttempt, setLogoLoadAttempt] = useState(0);
   
   // Get backend URL
-  const BACKEND_URL = useMemo(() => "https://aimdreamplanner.com", []);
+  const BACKEND_URL = useMemo(() => "http://localhost:8282", []);
   
   // Default image
   const defaultImage = "/image/admin-profile.jpg";
   
   // Load user data from localStorage
+  // Function to check if it's an employee's birthday
+  const checkBirthdays = (employees) => {
+    const today = new Date();
+    const currentMonth = today.getMonth() + 1;
+    const currentDay = today.getDate();
+
+    const birthdayPeople = employees.filter(emp => {
+      if (!emp.birthDate) return false;
+      const birthDate = new Date(emp.birthDate);
+      const birthMonth = birthDate.getMonth() + 1;
+      const birthDay = birthDate.getDate();
+      return birthMonth === currentMonth && birthDay === currentDay;
+    });
+
+    if (birthdayPeople.length > 0) {
+      setBirthdayEmployees(birthdayPeople);
+      setShowBirthdayPopup(true);
+    }
+  };
+
+  // Fetch employees and check birthdays
+  useEffect(() => {
+    const fetchEmployeesAndCheckBirthdays = async () => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user && user.id) {
+        try {
+          const response = await axios.get(
+            `http://localhost:8282/api/employee/${user.id}/employee/all`
+          );
+          checkBirthdays(response.data);
+        } catch (error) {
+          console.error("Error fetching employees:", error);
+        }
+      }
+    };
+
+    fetchEmployeesAndCheckBirthdays();
+  }, []);
+
+  // Check for due reminders
+  const checkReminders = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user?.id) return;
+
+      const response = await axios.get(`http://localhost:8282/api/reminders/${user.id}`);
+      const currentDate = new Date();
+      
+      const dueReminder = response.data.find(reminder => {
+        const reminderDate = new Date(reminder.reminderDate);
+        return (
+          reminderDate.getDate() === currentDate.getDate() &&
+          reminderDate.getMonth() === currentDate.getMonth() &&
+          reminderDate.getFullYear() === currentDate.getFullYear()
+        );
+      });
+
+      if (dueReminder) {
+        setCurrentReminder(dueReminder);
+        setShowReminderPopup(true);
+      }
+    } catch (error) {
+      console.error('Error checking reminders:', error);
+    }
+  };
+
+  // Check reminders daily at midnight
+  useEffect(() => {
+    checkReminders();
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const timeUntilMidnight = tomorrow - now;
+
+    // First check at midnight
+    const timeout = setTimeout(() => {
+      checkReminders();
+      // Then check every 24 hours
+      const interval = setInterval(checkReminders, 24 * 60 * 60 * 1000);
+      return () => clearInterval(interval);
+    }, timeUntilMidnight);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
@@ -432,7 +538,12 @@ const Dashboard = () => {
     {
       to: "/dashboard/expenses",
       label: "Expenses",
-      icon: <FaArrowDown /> // You can replace with FaMoneyBillWave or another icon if you prefer
+      icon: <FaArrowDown />
+    },
+    {
+      to: "/dashboard/reminders",
+      label: "Set Reminder",
+      icon: <FaBell />
     }
   ];
 
@@ -454,6 +565,76 @@ const Dashboard = () => {
 
   return (
     <div className={`flex h-screen overflow-hidden ${isDarkMode ? 'bg-gradient-to-br from-slate-900 to-blue-900 text-gray-100' : 'bg-gradient-to-br from-blue-50 to-white text-gray-800'}`}>
+      {/* Reminder Popup */}
+      {showReminderPopup && currentReminder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className={`relative p-6 rounded-lg shadow-xl ${isDarkMode ? 'bg-gray-800' : 'bg-white'} max-w-md w-full mx-4`}>
+            <button
+              onClick={() => setShowReminderPopup(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              <FaTimes className="w-5 h-5" />
+            </button>
+            <div className="text-center">
+              <div className="mb-4">
+                <FaBell className="text-4xl text-yellow-500 mx-auto animate-bounce" />
+              </div>
+              <h3 className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                Today's Festival : {currentReminder.functionName}
+              </h3>
+              <div className={`mt-4 p-3 rounded ${isDarkMode ? 'bg-gray-700' : 'bg-blue-50'}`}>
+                <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                  Date: {new Date(currentReminder.reminderDate).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Confetti Effect */}
+      {showBirthdayPopup && birthdayEmployees.length > 0 && (
+        <ReactConfetti
+          width={windowDimensions.width}
+          height={windowDimensions.height}
+          numberOfPieces={200}
+          recycle={true}
+          colors={['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff']}
+          tweenDuration={5000}
+        />
+      )}
+      {/* Birthday Popup */}
+      {showBirthdayPopup && birthdayEmployees.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className={`relative p-6 rounded-lg shadow-xl ${isDarkMode ? 'bg-gray-800' : 'bg-white'} max-w-md w-full mx-4`}>
+            <button
+              onClick={() => setShowBirthdayPopup(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              <FaTimes className="w-5 h-5" />
+            </button>
+            <div className="text-center">
+              <div className="mb-4">
+                <span className="text-4xl">🎂</span>
+              </div>
+              {birthdayEmployees.map((emp, index) => (
+                <div key={index} className="mb-4">
+                  <h3 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                    Today is {emp.firstName} {emp.lastName}'s Birthday!
+                  </h3>
+                  <p className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Let's make their day special! 🎉
+                  </p>
+                </div>
+              ))}
+              <div className={`mt-4 p-4 rounded-lg ${isDarkMode ? 'bg-gray-700' : 'bg-blue-50'}`}>
+                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-600'} text-sm`}>
+                  Don't forget to wish them a fantastic birthday! 🎈
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Mobile menu button - only visible on small screens */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
@@ -605,6 +786,7 @@ const Dashboard = () => {
             <Route path="viewAtt" element={<ViewAttendance />} />
             <Route path="profileform" element={<ProfileForm />} />
             <Route path="certificates" element={<Certificates />} />
+            <Route path="reminders" element={<Reminders />} />
             <Route path="*" element={<DashoBoardRouter />} />
           </Routes>
         </div>
