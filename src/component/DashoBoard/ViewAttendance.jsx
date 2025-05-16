@@ -32,7 +32,7 @@ export default function ViewAttendance() {
       const user = JSON.parse(userData);
       setLoggedUser(user);
       axios
-        .get(`http://localhost:8282/api/employee/${user.id}/employee/all`)
+        .get(`https://api.managifyhr.com/api/employee/${user.id}/employee/all`)
         .then(res => setEmployeeList(res.data))
         .catch(err => console.error("Failed to load employee list:", err));
     }
@@ -86,7 +86,7 @@ export default function ViewAttendance() {
       const subadminId = loggedUser.id;
       const encodedName = encodeURIComponent(empFullName);
       const res = await axios.get(
-        `http://localhost:8282/api/employee/${subadminId}/${encodedName}/attendance`
+        `https://api.managifyhr.com/api/employee/${subadminId}/${encodedName}/attendance`
       );
       setAttendanceData(res.data);
       setEmpName(res.data[0]?.employee?.firstName || "Employee");

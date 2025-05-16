@@ -31,7 +31,7 @@ const Home = () => {
   const fetchEmployees = async (id) => {
     try {
       console.log(`Fetching employees for subadmin ID: ${id}`);
-      const response = await axios.get(`http://localhost:8282/api/employee/${id}/employee/all`);
+      const response = await axios.get(`https://api.managifyhr.com/api/employee/${id}/employee/all`);
       console.log("Employee data received:", response.data);
       setEmployees(response.data);
       setLoading(false);

@@ -49,7 +49,7 @@ export default function Attendance() {
       
       // Fetch employee list for autocomplete
       axios
-        .get(`http://localhost:8282/api/employee/${subAdminId}/employee/all`)
+        .get(`https://api.managifyhr.com/api/employee/${subAdminId}/employee/all`)
         .then(res => {
           console.log("Loaded employee list:", res.data.length, "employees");
           setEmployeeList(res.data);
@@ -120,7 +120,7 @@ export default function Attendance() {
   const checkExistingAttendance = async (fullName, date) => {
     try {
       console.log(`Checking attendance for ${fullName} on ${date}`);
-      const response = await axios.get(`http://localhost:8282/api/employee/bulk/${encodeURIComponent(fullName)}/${date}`);
+      const response = await axios.get(`https://api.managifyhr.com/api/employee/bulk/${encodeURIComponent(fullName)}/${date}`);
       console.log('Existing attendance response:', response.data);
       return response.data;
     } catch (error) {
@@ -227,8 +227,8 @@ export default function Attendance() {
       
       let response;
       let existingStatus = '';
-      let updateUrl = `http://localhost:8282/api/employee/${subAdminId}/${encodedEmployeeName}/attendance/update/bulk`;
-      let addUrl = `http://localhost:8282/api/employee/${subAdminId}/${encodedEmployeeName}/attendance/add/bulk`;
+      let updateUrl = `https://api.managifyhr.com/api/employee/${subAdminId}/${encodedEmployeeName}/attendance/update/bulk`;
+      let addUrl = `https://api.managifyhr.com/api/employee/${subAdminId}/${encodedEmployeeName}/attendance/add/bulk`;
       
       if (existingAttendance && existingAttendance.length > 0) {
         // Attendance exists, use PUT to update
@@ -492,7 +492,7 @@ export default function Attendance() {
         promises.push(
           axios
             .post(
-              `http://localhost:8282/api/employee/${subAdminId}/${encodedEmployeeName}/attendance/add/bulk`,
+              `https://api.managifyhr.com/api/employee/${subAdminId}/${encodedEmployeeName}/attendance/add/bulk`,
               newRecords,
               config
             )
@@ -507,7 +507,7 @@ export default function Attendance() {
         promises.push(
           axios
             .put(
-              `http://localhost:8282/api/employee/${subAdminId}/${encodedEmployeeName}/attendance/update/bulk`,
+              `https://api.managifyhr.com/api/employee/${subAdminId}/${encodedEmployeeName}/attendance/update/bulk`,
               updateRecords,
               config
             )
