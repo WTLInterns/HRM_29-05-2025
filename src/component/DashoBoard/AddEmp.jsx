@@ -242,41 +242,97 @@
 //     setSelectedEmployee(null);
 //   };
 
-//   // Add Employee submission
-//   const handleAddEmp = async (e) => {
-//     e.preventDefault();
-//     if (!validateFields()) return;
+// Add Employee submission
+const handleAddEmp = async (e) => {
+  e.preventDefault();
+  if (!validateFields()) return;
 
-//     if (!subadminId) {
-//       toast.error("Subadmin session expired. Please login again.");
-//       return;
-//     }
+  if (!subadminId) {
+    toast.error("Subadmin session expired. Please login again.");
+    return;
+  }
 
-//     try {
-//       // Create FormData to send to the backend API (multipart/form-data)
-//       const formData = new FormData();
+  try {
+    // Create FormData to send to the backend API (multipart/form-data)
+    const formData = new FormData();
 
-//       // Add all text fields
-//       formData.append("firstName", firstName);
-//       formData.append("lastName", lastName);
-//       formData.append("email", email);
-//       formData.append("phone", phone);
-//       formData.append("aadharNo", aadharNo);
-//       formData.append("panCard", panCard);
-//       formData.append("education", education);
-//       formData.append("bloodGroup", bloodGroup);
-//       formData.append("jobRole", jobRole);
-//       formData.append("gender", gender);
-//       formData.append("address", address);
-//       formData.append("birthDate", birthDate);
-//       formData.append("joiningDate", joiningDate);
-//       formData.append("status", status);
-//       formData.append("bankName", bankName);
-//       formData.append("bankAccountNo", bankAccountNo);
-//       formData.append("bankIfscCode", bankIfscCode);
-//       formData.append("branchName", branchName);
-//       formData.append("salary", salary);
-//       formData.append("department", department);
+    // Append all text fields
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("aadharNo", aadharNo);
+    formData.append("panCard", panCard);
+    formData.append("education", education);
+    formData.append("bloodGroup", bloodGroup);
+    formData.append("jobRole", jobRole);
+    formData.append("gender", gender);
+    formData.append("address", address);
+    formData.append("birthDate", birthDate);
+    formData.append("joiningDate", joiningDate);
+    formData.append("status", status);
+    formData.append("bankName", bankName);
+    formData.append("bankAccountNo", bankAccountNo);
+    formData.append("bankIfscCode", bankIfscCode);
+    formData.append("branchName", branchName);
+    formData.append("salary", salary);
+    formData.append("department", department);
+
+    // Always send password
+    if (password && password.trim() !== "") {
+      formData.append("password", password);
+    } else {
+      formData.append("password", "");
+    }
+
+    // Add image files if they exist
+    if (empImg) {
+      formData.append("empimg", empImg);
+    }
+    if (adharImg) {
+      formData.append("adharimg", adharImg);
+    }
+    if (panImg) {
+      formData.append("panimg", panImg);
+    }
+
+    // Debug: Log FormData keys/values
+    for (let pair of formData.entries()) {
+      console.log(pair[0]+ ':', pair[1]);
+    }
+
+    // Send request
+    const response = await axios.post(
+      `https://api.managifyhr.com/api/subadmin/add-employee/${subadminId}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    console.log("API response:", response);
+    toast.success("Employee Registered Successfully");
+    setModal(false);
+    handleReset(e);
+
+    // Refresh the employee list
+    const refreshResponse = await axios.get(
+      `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+    );
+    setEmployees(refreshResponse.data);
+
+    // Dispatch event to notify Dashboard of employee updates
+    window.dispatchEvent(new Event("employeesUpdated"));
+  } catch (err) {
+    toast.error(
+      "Failed to register employee: " +
+        (err.response?.data?.message || err.message)
+    );
+    console.error(err);
+  }
+};
 // // Always send password: if not changed, use original; if changed, use new; never omit
 // if (password && password.trim() !== "") {
 //   formData.append("password", password);
