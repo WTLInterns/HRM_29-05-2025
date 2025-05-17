@@ -18,6 +18,10 @@ import IncrementLetter from "../AllCertificates/IncrementLetter";
 import AchievementCertificate from "../AllCertificates/AchievementCertificate";
 import IntershipCertificate from "../AllCertificates/IntershipCertificate";
 import Expenses from "../Expenses";
+import LeaveNotification from "../LeaveNotification";
+import Reminders from "../Reminders";
+
+
 
 const DashoBoardRouter = () => {
   console.log("Dashboard Router Component Rendering");
@@ -28,13 +32,16 @@ const DashoBoardRouter = () => {
         {/* Main dashboard route */}
         <Route index element={<Dashboard />} />
         
-        {/* Nested routes */}
+        {/* Core routes */}
         <Route path="addEmp" element={<AddEmp />} />
         <Route path="attendance" element={<Attendance />} />
+        <Route path="expenses" element={<Expenses />} />
+        <Route path="reminders" element={<Reminders />} />
+        <Route path="leave-notification" element={<LeaveNotification />} />
+        
+        {/* Certificate routes */}
         <Route path="certificates" element={<Certificates />} />
         <Route path="experience" element={<ExperienceLetter />} />
-        
-        {/* Add other certificate routes as needed */}
         <Route path="letterhead" element={<CompanyLetterhead />} />
         <Route path="appointment" element={<AppointmentLetter />} />
         <Route path="joining" element={<JoiningLetter />} />
@@ -49,7 +56,6 @@ const DashoBoardRouter = () => {
         <Route path="achievement" element={<AchievementCertificate />} />
         <Route path="performance" element={<PerformanceCertificate />} />
         <Route path="post-appraisal" element={<PostAppraisal />} />
-        <Route path="expenses" element={<Expenses />} />
       </Routes>
     </>
   );

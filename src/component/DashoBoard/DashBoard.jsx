@@ -22,6 +22,7 @@ import { Pie, Bar } from 'react-chartjs-2';
 import "./animations.css";
 import DashoBoardRouter from "./DashboardRouter/DashoBoardRouter";
 import Reminders from "./Reminders";
+import LeaveNotification from "./LeaveNotification";
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
@@ -544,6 +545,11 @@ const Dashboard = () => {
       to: "/dashboard/reminders",
       label: "Set Reminder",
       icon: <FaBell />
+    },
+    {
+      to: "/dashboard/leave-notification",
+      label: "Leave Approval",
+      icon: <FaExclamationTriangle />
     }
   ];
 
