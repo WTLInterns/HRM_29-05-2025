@@ -45,6 +45,34 @@ const scrollbarStyles = `
 `;
 
 const Dashboard = () => {
+  // ...existing state...
+  const [expenses, setExpenses] = useState([]);
+  const [totalExpenses, setTotalExpenses] = useState(0);
+
+  // Fetch expenses and calculate total
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        // Use the same SUBADMIN_ID logic as Expenses.jsx
+        const SUBADMIN_ID = 2;
+        const API_BASE = `https://api.managifyhr.com/api/expenses/${SUBADMIN_ID}`;
+        const res = await axios.get(`${API_BASE}/getAll`);
+        setExpenses(res.data || []);
+      } catch (err) {
+        setExpenses([]);
+      }
+    };
+    fetchExpenses();
+    // Listen for expense updates (optional: you can dispatch a custom event on expense change)
+    window.addEventListener('expensesUpdated', fetchExpenses);
+    return () => window.removeEventListener('expensesUpdated', fetchExpenses);
+  }, []);
+
+  useEffect(() => {
+    // Calculate total expenses whenever expenses change
+    const total = expenses.reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
+    setTotalExpenses(total);
+  }, [expenses]);
   const navigate = useNavigate();
   const [reminders, setReminders] = useState([]);
   const [showReminderPopup, setShowReminderPopup] = useState(false);
@@ -781,6 +809,35 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-4">
+        {/* Only show dashboard cards on the main dashboard route */}
+        {window.location.pathname === "/dashboard" || window.location.pathname === "/" ? (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            {/* Total Employees Card */}
+            <div className={`rounded-lg shadow-md p-6 flex flex-col items-center ${isDarkMode ? 'bg-slate-900 text-cyan-300' : 'bg-white text-cyan-700'}`}>
+              <span className="text-4xl mb-2">👥</span>
+              <div className="text-lg font-semibold mb-1">Total Employees</div>
+              <div className="text-3xl font-bold">{stats.activeEmployees + stats.inactiveEmployees}</div>
+            </div>
+            {/* Active Employees Card */}
+            <div className={`rounded-lg shadow-md p-6 flex flex-col items-center ${isDarkMode ? 'bg-slate-900 text-blue-300' : 'bg-white text-blue-700'}`}>
+              <span className="text-4xl mb-2">👨‍💼</span>
+              <div className="text-lg font-semibold mb-1">Active Employees</div>
+              <div className="text-3xl font-bold">{stats.activeEmployees}</div>
+            </div>
+            {/* Inactive Employees Card */}
+            <div className={`rounded-lg shadow-md p-6 flex flex-col items-center ${isDarkMode ? 'bg-slate-900 text-red-300' : 'bg-white text-red-600'}`}>
+              <span className="text-4xl mb-2">🛑</span>
+              <div className="text-lg font-semibold mb-1">Inactive Employees</div>
+              <div className="text-3xl font-bold">{stats.inactiveEmployees}</div>
+            </div>
+            {/* Total Expenses Card */}
+            <div className={`rounded-lg shadow-md p-6 flex flex-col items-center ${isDarkMode ? 'bg-slate-900 text-amber-300' : 'bg-white text-amber-600'}`}>
+              <span className="text-4xl mb-2">💸</span>
+              <div className="text-lg font-semibold mb-1">Total Expenses</div>
+              <div className="text-3xl font-bold">₹{totalExpenses.toLocaleString()}</div>
+            </div>
+          </div>
+        ) : null}
         {/* Add top padding on mobile to account for the fixed header */}
         <div className="pt-16 lg:pt-0 h-full page-transition-container animate-fadeIn">
           <Routes>
