@@ -95,7 +95,7 @@
 //       try {
 //         console.log(`Fetching employees for subadmin ID: ${subadminId}`);
 //         const response = await axios.get(
-//           `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+//           `http://localhost:8282/api/employee/${subadminId}/employee/all`
 //         );
 //         console.log("Fetched employees:", response.data);
 //         setEmployees(response.data);
@@ -303,7 +303,7 @@ const handleAddEmp = async (e) => {
 
     // Send request
     const response = await axios.post(
-      `https://api.managifyhr.com/api/subadmin/add-employee/${subadminId}`,
+      `http://localhost:8282/api/subadmin/add-employee/${subadminId}`,
       formData,
       {
         headers: {
@@ -319,7 +319,7 @@ const handleAddEmp = async (e) => {
 
     // Refresh the employee list
     const refreshResponse = await axios.get(
-      `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+      `http://localhost:8282/api/employee/${subadminId}/employee/all`
     );
     setEmployees(refreshResponse.data);
 
@@ -359,7 +359,7 @@ const handleAddEmp = async (e) => {
 
 //       // Use the dynamic subadminId from state
 //       const response = await axios.post(
-//         `https://api.managifyhr.com/api/subadmin/add-employee/${subadminId}`,
+//         `http://localhost:8282/api/subadmin/add-employee/${subadminId}`,
 //         formData,
 //         {
 //           headers: {
@@ -375,7 +375,7 @@ const handleAddEmp = async (e) => {
 
 //       // Refresh the employee list
 //       const refreshResponse = await axios.get(
-//         `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+//         `http://localhost:8282/api/employee/${subadminId}/employee/all`
 //       );
 //       setEmployees(refreshResponse.data);
 
@@ -461,7 +461,7 @@ const handleAddEmp = async (e) => {
 
 //       // Use the correct API endpoint for updating an employee based on the backend code
 //       const response = await axios.put(
-//         `https://api.managifyhr.com/api/employee/update-employee/${subadminId}/${encodeURIComponent(fullName)}`,
+//         `http://localhost:8282/api/employee/update-employee/${subadminId}/${encodeURIComponent(fullName)}`,
 //         formData,
 //         {
 //           headers: {
@@ -477,7 +477,7 @@ const handleAddEmp = async (e) => {
 
 //       // Refresh the employee list
 //       const refreshResponse = await axios.get(
-//         `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+//         `http://localhost:8282/api/employee/${subadminId}/employee/all`
 //       );
 //       setEmployees(refreshResponse.data);
 
@@ -514,7 +514,7 @@ const handleAddEmp = async (e) => {
 
 //       // Use the dynamic subadminId from state
 //       const response = await axios.delete(
-//         `https://api.managifyhr.com/api/employee/${subadminId}/delete/${empId}`,
+//         `http://localhost:8282/api/employee/${subadminId}/delete/${empId}`,
 //         {
 //           headers: {
 //             "Content-Type": "application/json",
@@ -527,7 +527,7 @@ const handleAddEmp = async (e) => {
 
 //       // Refresh the employee list
 //       const refreshResponse = await axios.get(
-//         `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+//         `http://localhost:8282/api/employee/${subadminId}/employee/all`
 //       );
 //       setEmployees(refreshResponse.data);
 
@@ -564,7 +564,7 @@ const handleAddEmp = async (e) => {
 //       );
 
 //       const response = await axios.post(
-//         `https://api.managifyhr.com/api/employee/${subadminId}/${encodeURIComponent(
+//         `http://localhost:8282/api/employee/${subadminId}/${encodeURIComponent(
 //           fullName
 //         )}/send-login-details`,
 //         {},
@@ -633,7 +633,7 @@ const handleAddEmp = async (e) => {
 
 //     // Profile image - using the correct field name from the backend entity (empimg)
 //     if (employee.empimg) {
-//       const profileImageUrl = `https://api.managifyhr.com/images/profile/${employee.empimg}`;
+//       const profileImageUrl = `http://localhost:8282/images/profile/${employee.empimg}`;
 //       console.log("Setting profile image URL:", profileImageUrl);
 //       setEmpImgPreview(profileImageUrl);
 
@@ -648,7 +648,7 @@ const handleAddEmp = async (e) => {
 
 //     // Aadhar image - using the correct field name from the backend entity (adharimg)
 //     if (employee.adharimg) {
-//       const aadharImageUrl = `https://api.managifyhr.com/images/profile/${employee.adharimg}`;
+//       const aadharImageUrl = `http://localhost:8282/images/profile/${employee.adharimg}`;
 //       console.log("Setting aadhar image URL:", aadharImageUrl);
 //       setAdharImgPreview(aadharImageUrl);
 
@@ -663,7 +663,7 @@ const handleAddEmp = async (e) => {
 
 //     // PAN image - using the correct field name from the backend entity (panimg)
 //     if (employee.panimg) {
-//       const panImageUrl = `https://api.managifyhr.com/images/profile/${employee.panimg}`;
+//       const panImageUrl = `http://localhost:8282/images/profile/${employee.panimg}`;
 //       console.log("Setting PAN image URL:", panImageUrl);
 //       setPanImgPreview(panImageUrl);
 
@@ -2629,7 +2629,7 @@ export default function AddEmp() {
       try {
         console.log(`Fetching employees for subadmin ID: ${subadminId}`);
         const response = await axios.get(
-          `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+          `http://localhost:8282/api/employee/${subadminId}/employee/all`
         );
         console.log("Fetched employees:", response.data);
         setEmployees(response.data);
@@ -2864,7 +2864,7 @@ const validateFields = () => {
     }
     // Use the dynamic subadminId from state
     const response = await axios.post(
-      `https://api.managifyhr.com/api/subadmin/add-employee/${subadminId}`,
+      `http://localhost:8282/api/subadmin/add-employee/${subadminId}`,
       formData,
       {
         headers: {
@@ -2880,7 +2880,7 @@ const validateFields = () => {
 
       // Refresh the employee list
       const refreshResponse = await axios.get(
-        `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+        `http://localhost:8282/api/employee/${subadminId}/employee/all`
       );
       setEmployees(refreshResponse.data);
 
@@ -2964,7 +2964,7 @@ const validateFields = () => {
 
       // Use the correct API endpoint for updating an employee based on the backend code
       const response = await axios.put(
-        `https://api.managifyhr.com/api/employee/update-employee/${subadminId}/${encodeURIComponent(fullName)}`,
+        `http://localhost:8282/api/employee/update-employee/${subadminId}/${encodeURIComponent(fullName)}`,
       formData,
       {
         headers: {
@@ -2980,7 +2980,7 @@ const validateFields = () => {
 
     // Refresh the employee list
     const refreshResponse = await axios.get(
-      `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+      `http://localhost:8282/api/employee/${subadminId}/employee/all`
     );
     setEmployees(refreshResponse.data);
 
@@ -3031,7 +3031,7 @@ const confirmedDeleteEmp = async (empId) => {
 
     // Use the dynamic subadminId from state
     const response = await axios.delete(
-      `https://api.managifyhr.com/api/employee/${subadminId}/delete/${empId}`,
+      `http://localhost:8282/api/employee/${subadminId}/delete/${empId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -3044,7 +3044,7 @@ const confirmedDeleteEmp = async (empId) => {
 
     // Refresh the employee list
     const refreshResponse = await axios.get(
-      `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
+      `http://localhost:8282/api/employee/${subadminId}/employee/all`
     );
     setEmployees(refreshResponse.data);
 
@@ -3082,7 +3082,7 @@ const confirmedSendLoginDetails = async (empId) => {
       `Sending login details to employee ${fullName} under subadmin ${subadminId}. Password: ${empPassword}`
     );
     const response = await axios.post(
-      `https://api.managifyhr.com/api/employee/${subadminId}/${encodeURIComponent(
+      `http://localhost:8282/api/employee/${subadminId}/${encodeURIComponent(
         fullName
       )}/send-login-details`,
       { password: empPassword },
@@ -3153,7 +3153,7 @@ const handleEditEmp = (employee) => {
 
     // Profile image - using the correct field name from the backend entity (empimg)
     if (employee.empimg) {
-      const profileImageUrl = `https://api.managifyhr.com/images/profile/${employee.empimg}`;
+      const profileImageUrl = `http://localhost:8282/images/profile/${employee.empimg}`;
       console.log("Setting profile image URL:", profileImageUrl);
       setEmpImgPreview(profileImageUrl);
 
@@ -3168,7 +3168,7 @@ const handleEditEmp = (employee) => {
 
     // Aadhar image - using the correct field name from the backend entity (adharimg)
     if (employee.adharimg) {
-      const aadharImageUrl = `https://api.managifyhr.com/images/profile/${employee.adharimg}`;
+      const aadharImageUrl = `http://localhost:8282/images/profile/${employee.adharimg}`;
       console.log("Setting aadhar image URL:", aadharImageUrl);
       setAdharImgPreview(aadharImageUrl);
 
@@ -3183,7 +3183,7 @@ const handleEditEmp = (employee) => {
 
     // PAN image - using the correct field name from the backend entity (panimg)
     if (employee.panimg) {
-      const panImageUrl = `https://api.managifyhr.com/images/profile/${employee.panimg}`;
+      const panImageUrl = `http://localhost:8282/images/profile/${employee.panimg}`;
       console.log("Setting PAN image URL:", panImageUrl);
       setPanImgPreview(panImageUrl);
 
@@ -3344,26 +3344,30 @@ const handleEditEmp = (employee) => {
                       <FiEdit size={16} />
                     </button>
                     <button
-                      onClick={() => handleDeleteEmp(employee.empId)}
-                      className={`p-2 rounded-full ${
-                        isDarkMode
-                          ? "bg-red-600 hover:bg-red-700"
-                          : "bg-red-500 hover:bg-red-600"
-                      } text-white transition-all duration-200 hover:scale-110`}
+                      onClick={() =>
+                        setConfirmDialog({
+                          open: true,
+                          type: "delete",
+                          empId: employee.empId,
+                        })
+                      }
+                      className="p-2 rounded-full bg-red-600 hover:bg-red-700 text-white shadow transition-all duration-200 hover:scale-110"
                       title="Delete Employee"
                     >
-                      <RiDeleteBin6Line size={16} />
+                      <MdDeleteOutline size={18} />
                     </button>
                     <button
-                      onClick={() => handleSendLoginDetails(employee.empId)}
-                      className={`p-2 rounded-full ${
-                        isDarkMode
-                          ? "bg-blue-600 hover:bg-blue-700"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      } text-white transition-all duration-200 hover:scale-110`}
-                      title="Send Email"
+                      onClick={() =>
+                        setConfirmDialog({
+                          open: true,
+                          type: "sendEmail",
+                          empId: employee.empId,
+                        })
+                      }
+                      className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow transition-all duration-200 hover:scale-110"
+                      title="Send Login Email"
                     >
-                      <MdOutlineEmail size={16} />
+                      <MdOutlineEmail size={18} />
                     </button>
                   </td>
                 </tr>
@@ -3461,24 +3465,28 @@ const handleEditEmp = (employee) => {
                     <FiEdit size={18} />
                   </button>
                   <button
-                    onClick={() => handleDeleteEmp(employee.empId)}
-                    className={`p-2 rounded-full ${
-                      isDarkMode
-                        ? "bg-red-600 hover:bg-red-700"
-                        : "bg-red-500 hover:bg-red-600"
-                    } text-white transition-all duration-200 hover:scale-110`}
+                    onClick={() =>
+                      setConfirmDialog({
+                        open: true,
+                        type: "delete",
+                        empId: employee.empId,
+                      })
+                    }
+                    className="p-2 rounded-full bg-red-600 hover:bg-red-700 text-white shadow transition-all duration-200 hover:scale-110"
                     title="Delete Employee"
                   >
-                    <RiDeleteBin6Line size={18} />
+                    <MdDeleteOutline size={18} />
                   </button>
                   <button
-                    onClick={() => handleSendLoginDetails(employee.empId)}
-                    className={`p-2 rounded-full ${
-                      isDarkMode
-                        ? "bg-blue-600 hover:bg-blue-700"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    } text-white transition-all duration-200 hover:scale-110`}
-                    title="Send Email"
+                    onClick={() =>
+                      setConfirmDialog({
+                        open: true,
+                        type: "sendEmail",
+                        empId: employee.empId,
+                      })
+                    }
+                    className="p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow transition-all duration-200 hover:scale-110"
+                    title="Send Login Email"
                   >
                     <MdOutlineEmail size={18} />
                   </button>
@@ -3603,7 +3611,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       />
                     </div>
@@ -3626,7 +3634,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       />
                     </div>
@@ -3650,7 +3658,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       />
                     </div>
@@ -3673,7 +3681,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       />
                     </div>
@@ -3696,7 +3704,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       />
                     </div>
@@ -3719,7 +3727,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       />
                     </div>
@@ -3741,7 +3749,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       >
                         <option value="">Select education</option>
@@ -3768,7 +3776,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       >
                         <option value="">Select blood group</option>
@@ -3796,7 +3804,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       >
                         <option value="">Select job role</option>
@@ -3839,7 +3847,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       >
                         <option value="">Select gender</option>
@@ -3867,7 +3875,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       ></textarea>
                     </div>
@@ -3889,7 +3897,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       >
                         <option value="">Select department</option>
@@ -3955,7 +3963,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         aria-label="Select your birth date"
                       />
                     </div>
@@ -3978,7 +3986,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         aria-label="Select your joining date"
                       />
                     </div>
@@ -4000,7 +4008,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                         required
                       >
                         <option value="">Select status</option>
@@ -4027,7 +4035,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                       />
                     </div>
 
@@ -4049,7 +4057,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                       />
                     </div>
 
@@ -4065,15 +4073,13 @@ const handleEditEmp = (employee) => {
                       <input
                         id="bankIfscCode"
                         value={bankIfscCode}
-                        onChange={(e) =>
-                          setbankIfscCode(e.target.value.toUpperCase())
-                        }
+                        onChange={(e) => setbankIfscCode(e.target.value)}
                         placeholder="Enter IFSC code (e.g., ABCD0EF1234)"
                         className={`block w-full px-4 py-2 ${
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                       />
                     </div>
 
@@ -4095,7 +4101,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                       />
                     </div>
 
@@ -4117,7 +4123,7 @@ const handleEditEmp = (employee) => {
                           isDarkMode
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
-                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
                       />
                     </div>
                   </div>
@@ -5057,25 +5063,48 @@ const handleEditEmp = (employee) => {
         </div>
       )}
       {/* Always render the confirmation dialog here, outside any conditional rendering */}
-      <ConfirmDialog
-        open={confirmDialog.open}
-        title={confirmDialog.type === 'delete' ? 'Delete Employee' : 'Send Login Details'}
-        message={
-          confirmDialog.type === 'delete'
-            ? 'Are you sure you want to delete this employee? This action cannot be undone.'
-            : 'Are you sure you want to send login details to this employee?'
-        }
-        confirmText={confirmDialog.type === 'delete' ? 'Delete' : 'Send'}
-        cancelText="Cancel"
-        onConfirm={() => {
-          if (confirmDialog.type === 'delete') {
-            confirmedDeleteEmp(confirmDialog.empId);
-          } else if (confirmDialog.type === 'email') {
-            confirmedSendLoginDetails(confirmDialog.empId);
+      {confirmDialog.open && (
+        <ConfirmDialog
+          open={confirmDialog.open}
+          title={
+            confirmDialog.type === "delete"
+              ? "Confirm Deletion"
+              : "Send Login Details"
           }
-        }}
-        onCancel={() => setConfirmDialog({ open: false, type: '', empId: null })}
-      />
+          message={
+            confirmDialog.type === "delete"
+              ? `Are you sure you want to delete this employee?\nName: ${employees.find(
+                  (e) => e.empId === confirmDialog.empId
+                ).firstName} ${employees.find(
+                  (e) => e.empId === confirmDialog.empId
+                ).lastName}, Email: ${employees.find(
+                  (e) => e.empId === confirmDialog.empId
+                ).email}`
+              : `Send login details to ${employees.find(
+                  (e) => e.empId === confirmDialog.empId
+                ).firstName} ${employees.find(
+                  (e) => e.empId === confirmDialog.empId
+                ).lastName} (${employees.find(
+                  (e) => e.empId === confirmDialog.empId
+                ).email})?`
+          }
+          confirmText={
+            confirmDialog.type === "delete" ? "Yes, Delete" : "Send Email"
+          }
+          cancelText="Cancel"
+          onConfirm={() => {
+            if (confirmDialog.type === "delete") {
+              handleDeleteEmp(confirmDialog.empId);
+            } else if (confirmDialog.type === "sendEmail") {
+              confirmedSendLoginDetails(confirmDialog.empId);
+            }
+            setConfirmDialog({ open: false, type: "", empId: null });
+          }}
+          onCancel={() =>
+            setConfirmDialog({ open: false, type: "", empId: null })
+          }
+        />
+      )}
     </div>
   );
 }

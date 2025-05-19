@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { FaTrash, FaCheck, FaTimes } from 'react-icons/fa';
 import './LeaveNotification.css';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import { toast } from 'react-toastify';
 
 const LeaveNotification = () => {
+  // Delete dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
   // Robust user parse from localStorage
   let userData = null;
   try {
@@ -54,7 +63,7 @@ const LeaveNotification = () => {
     const fetchEmployees = async () => {
       if (userRole === 'SUBADMIN' && subadminId) {
         try {
-          const res = await fetch(`https://api.managifyhr.com/api/employee/${subadminId}/employee/all`);
+          const res = await fetch(`http://localhost:8282/api/employee/${subadminId}/employee/all`);
           if (!res.ok) throw new Error('Failed to fetch employees');
           const data = await res.json();
           console.log('Fetched employees:', data); // Debug log
@@ -84,7 +93,7 @@ const LeaveNotification = () => {
           setLoading(false);
           return;
         }
-        const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}`);
+        const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}`);
         if (!response.ok) throw new Error('Failed to fetch leave data');
         const data = await response.json();
         const mapped = data.map(item => ({
@@ -123,7 +132,7 @@ const LeaveNotification = () => {
         setLoading(false);
         return;
       }
-      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}`);
+      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}`);
       if (!response.ok) throw new Error('Failed to fetch leave data');
       const data = await response.json();
       const mapped = data.map(item => ({
@@ -155,7 +164,7 @@ const LeaveNotification = () => {
     let empNameToUse = userRole === 'SUBADMIN' ? selectedEmployeeFullName : userFullName;
     try {
       setLoading(true);
-      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
+      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedLeave)
@@ -175,7 +184,7 @@ const LeaveNotification = () => {
     let empNameToUse = userRole === 'SUBADMIN' ? selectedEmployeeFullName : userFullName;
     try {
       setLoading(true);
-      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
+      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedLeave)
@@ -191,7 +200,35 @@ const LeaveNotification = () => {
 
 
   const handleDelete = (id) => {
-    setLeaveData(prevData => prevData.filter(leave => leave.id !== id));
+    setDeleteTargetId(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTargetId) return;
+    let empNameToUse = userRole === 'SUBADMIN' ? selectedEmployeeFullName : userFullName;
+    try {
+      setLoading(true);
+      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${encodeURIComponent(empNameToUse)}/${deleteTargetId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete leave');
+      setDeleteDialogOpen(false);
+      setDeleteTargetId(null);
+      toast.success('Leave deleted successfully!');
+      await refreshLeaves();
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete leave');
+      setDeleteDialogOpen(false);
+      setDeleteTargetId(null);
+      setLoading(false);
+    }
+  };
+
+
+  const handleCancelDelete = () => {
+    setDeleteDialogOpen(false);
+    setDeleteTargetId(null);
   };
 
   return (
@@ -389,6 +426,91 @@ const LeaveNotification = () => {
           </tbody>
         </table>
       </div>
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleCancelDelete}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+        PaperProps={{
+          style: {
+            background: isDarkMode ? '#232b36' : '#fff',
+            borderRadius: 12,
+            minWidth: 380,
+            border: isDarkMode ? '2px solid #38bdf8' : '2px solid #1976d2',
+            boxShadow: '0 0 18px 0 #38bdf8',
+            color: isDarkMode ? '#fff' : '#222',
+          }
+        }}
+      >
+        <DialogTitle
+          id="delete-dialog-title"
+          style={{
+            color: '#38bdf8',
+            fontWeight: 700,
+            fontSize: 24,
+            marginBottom: 0,
+            letterSpacing: 0.5
+          }}
+        >
+          Confirm Deletion
+        </DialogTitle>
+        <DialogContent style={{paddingTop: 10, paddingBottom: 6}}>
+          <div style={{fontSize: 18, marginBottom: 8, fontWeight: 500}}>
+            Are you sure you want to delete this leave request?
+          </div>
+          <div style={{color:'#f87171', fontWeight:700, fontSize:18, marginTop:6}}>
+            {(() => {
+              const leave = leaveData.find(l => l.id === deleteTargetId);
+              if (!leave) return null;
+              return (
+                <>
+                  Employee: {leave.employeeName}<br/>
+                  {leave.startDate && leave.endDate && (
+                    <>Dates: {leave.startDate} to {leave.endDate}<br/></>
+                  )}
+                  {leave.reason && (
+                    <>Reason: {leave.reason}</>
+                  )}
+                </>
+              );
+            })()}
+          </div>
+        </DialogContent>
+        <DialogActions style={{padding: 18, paddingTop: 0}}>
+          <Button
+            onClick={handleCancelDelete}
+            variant="outlined"
+            style={{
+              color: isDarkMode ? '#38bdf8' : '#1976d2',
+              borderColor: isDarkMode ? '#38bdf8' : '#1976d2',
+              fontWeight: 600,
+              fontSize: 17,
+              minWidth: 110,
+              marginRight: 10,
+              background: isDarkMode ? '#232b36' : '#fff',
+              letterSpacing: 0.5
+            }}
+          >
+            CANCEL
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            variant="contained"
+            style={{
+              background: '#ef4444',
+              color: '#fff',
+              fontWeight: 700,
+              fontSize: 17,
+              minWidth: 130,
+              boxShadow: '0 2px 8px #ef4444a3',
+              letterSpacing: 0.5
+            }}
+          >
+            YES, DELETE
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
     </div>
   );

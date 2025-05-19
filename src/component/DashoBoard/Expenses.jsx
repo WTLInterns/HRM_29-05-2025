@@ -38,7 +38,7 @@ const style = (isDarkMode) => ({
 });
 
 const SUBADMIN_ID = 2;
-const API_BASE = `https://api.managifyhr.com/api/expenses/${SUBADMIN_ID}`;
+const API_BASE = `http://localhost:8282/api/expenses/${SUBADMIN_ID}`;
 
 const initialForm = {
   expenseId: "",
@@ -147,16 +147,33 @@ export default function Expenses() {
     }
   };
 
-  const handleDelete = async (expenseId) => {
-    const confirmed = window.confirm("Are you sure you want to delete this expense?");
-    if (!confirmed) return;
+  // Dialog state for delete confirmation
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [expenseToDelete, setExpenseToDelete] = useState(null);
+
+  // Open confirmation dialog
+  const handleOpenDeleteDialog = (expense) => {
+    setExpenseToDelete(expense);
+    setDeleteDialogOpen(true);
+  };
+
+  // Close dialog
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setExpenseToDelete(null);
+  };
+
+  // Confirm delete
+  const handleConfirmDelete = async () => {
+    if (!expenseToDelete) return;
     try {
-      await axios.delete(`${API_BASE}/delete-expenses/${expenseId}`);
-      toast.success("Deleted successfully");
+      const res = await axios.delete(`${API_BASE}/${expenseToDelete.expenseId}`);
+      toast.success(res.data || "Expense record deleted successfully");
       fetchExpenses();
     } catch (err) {
       toast.error("Failed to delete expense");
     }
+    handleCloseDeleteDialog();
   };
 
   const filteredExpenses = expenses.filter((exp) =>
@@ -170,7 +187,30 @@ export default function Expenses() {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+      
+      {/* Delete Confirmation Dialog */}
+      <Modal open={deleteDialogOpen} onClose={handleCloseDeleteDialog} aria-labelledby="delete-expense-title" aria-describedby="delete-expense-description">
+        <Box sx={style(isDarkMode)}>
+          <Typography id="delete-expense-title" variant="h6" component="h2" sx={{ mb: 2, color: isDarkMode ? '#38bdf8' : '#1976d2' }}>
+            Confirm Deletion
+          </Typography>
+          <Typography id="delete-expense-description" sx={{ mb: 3 }}>
+            Are you sure you want to delete this expense?
+            <br />
+            <span style={{ fontWeight: 'bold', color: isDarkMode ? '#f87171' : '#dc2626' }}>
+              {expenseToDelete && `Bill No: ${expenseToDelete.billNo}, Amount: ₹${expenseToDelete.amount}`}
+            </span>
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Button onClick={handleCloseDeleteDialog} variant="outlined" color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmDelete} variant="contained" color="error">
+              Yes, Delete
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
       <div className={`p-2 sm:p-4 md:p-8 ${isDarkMode ? 'bg-slate-900 text-gray-100' : 'bg-gray-100 text-gray-800'} min-h-screen`}>
         <h1 className={`text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-4 ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>Expenses</h1>
         <div className={`mb-6 ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} p-2 sm:p-4 rounded-lg shadow-md border`}>
@@ -217,7 +257,7 @@ export default function Expenses() {
                   <td className="border px-4 py-2">{exp.reason}</td>
                   <td className="border px-4 py-2">
                     <button onClick={() => handleOpen(exp)} className={`mr-2 p-2 rounded ${isDarkMode ? 'bg-slate-700 text-blue-300 hover:bg-slate-600' : 'bg-gray-100 text-blue-600 hover:bg-gray-200'}`}><EditIcon /></button>
-                    <button onClick={() => handleDelete(exp.expenseId)} className={`p-2 rounded ${isDarkMode ? 'bg-slate-700 text-red-400 hover:bg-slate-600' : 'bg-gray-100 text-red-600 hover:bg-gray-200'}`}><DeleteIcon /></button>
+                    <button onClick={() => handleOpenDeleteDialog(exp)} className={`p-2 rounded ${isDarkMode ? 'bg-slate-700 text-red-400 hover:bg-slate-600' : 'bg-gray-100 text-red-600 hover:bg-gray-200'}`}><DeleteIcon /></button>
                   </td>
                 </tr>
               ))}
@@ -322,9 +362,9 @@ export default function Expenses() {
                 {editId && form.billImage && !form.billImageFile && (
                   <div className="mt-3">
                     <div className="text-[#bfc9db] text-xs mb-1">Actual Bill Image:</div>
-                    <a href={`https://api.managifyhr.com/images/profile/${form.billImage}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`http://localhost:8282/images/profile/${form.billImage}`} target="_blank" rel="noopener noreferrer">
                       <img
-                        src={`https://api.managifyhr.com/images/profile/${form.billImage}`}
+                        src={`http://localhost:8282/images/profile/${form.billImage}`}
                         alt="Bill"
                         className="border border-[#223054] rounded-lg max-h-32 bg-[#17233e] cursor-pointer hover:opacity-80 transition"
                         style={{ marginTop: 10 }}

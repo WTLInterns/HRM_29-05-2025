@@ -18,54 +18,51 @@ const formatDate = (dateStr) => {
   return `${parts[2]}-${parts[1]}-${parts[0]}`
 }
 
-// Helpers for converting numbers to words
-const numberToWordsHelper = (num) => {
+// Helper for Indian currency words
+function numberToWords(num) {
+  if (num == null) return "";
+  if (num === 0) return "Zero Rupees Only";
   const a = [
-    "",
-    "One",
-    "Two",
-    "Three",
-    "Four",
-    "Five",
-    "Six",
-    "Seven",
-    "Eight",
-    "Nine",
-    "Ten",
-    "Eleven",
-    "Twelve",
-    "Thirteen",
-    "Fourteen",
-    "Fifteen",
-    "Sixteen",
-    "Seventeen",
-    "Eighteen",
-    "Nineteen",
-  ]
-  const b = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"]
-  let str = ""
-  if (num > 99) {
-    str += a[Math.floor(num / 100)] + " Hundred "
-    num = num % 100
+    "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+  ];
+  const b = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+  const units = [
+    { value: 10000000, str: "Crore" },
+    { value: 100000, str: "Lakh" },
+    { value: 1000, str: "Thousand" },
+    { value: 100, str: "Hundred" }
+  ];
+  let words = "";
+  let n = Math.floor(num);
+  if (n > 999999999) return "Overflow";
+  for (let i = 0; i < units.length; i++) {
+    if (n >= units[i].value) {
+      let quotient = Math.floor(n / units[i].value);
+      if (quotient > 19) {
+        words += b[Math.floor(quotient / 10)] + " " + a[quotient % 10] + " ";
+      } else {
+        words += a[quotient] + " ";
+      }
+      words += units[i].str + " ";
+      n = n % units[i].value;
+    }
   }
-  if (num > 19) {
-    str += b[Math.floor(num / 10)] + " " + a[num % 10]
-  } else {
-    str += a[num]
+  if (n > 0) {
+    if (words !== "") words += "";
+    if (n > 19) {
+      words += b[Math.floor(n / 10)] + " " + a[n % 10] + " ";
+    } else {
+      words += a[n] + " ";
+    }
   }
-  return str.trim()
+  words = words.replace(/ +/g, ' ').trim();
+  // Ensure 'Rupees Only' is not duplicated, even if present multiple times
+  let result = words;
+  // Remove all occurrences of 'Rupees Only' (case-insensitive)
+  result = result.replace(/(Rupees Only)+/gi, '').trim();
+  return result + ' Rupees Only';
 }
-const numberToWords = (num) => {
-  if (num == null) return ""
-  const numStr = num.toString()
-  if (numStr.length > 9) return "Overflow"
-  const n = ("000000000" + numStr).substr(-9).match(/.{1,3}/g)
-  let str = ""
-  str += Number(n[0]) !== 0 ? numberToWordsHelper(Number(n[0])) + " Million " : ""
-  str += Number(n[1]) !== 0 ? numberToWordsHelper(Number(n[1])) + " Thousand " : ""
-  str += Number(n[2]) !== 0 ? numberToWordsHelper(Number(n[2])) : ""
-  return str.trim()
-}
+
 
 // Convert a string to Title Case
 const toTitleCase = (str) => {
@@ -226,7 +223,7 @@ export default function SalaryReport() {
       
       // Using the new API endpoint format
       const response = await axios.get(
-        `https://api.managifyhr.com/api/employee/employee/${encodeURIComponent(user.registercompanyname)}/${encodeURIComponent(employeeName)}/attendance/report?startDate=${startDate}&endDate=${endDate}`
+        `http://localhost:8282/api/employee/employee/${encodeURIComponent(user.registercompanyname)}/${encodeURIComponent(employeeName)}/attendance/report?startDate=${startDate}&endDate=${endDate}`
       )
       
       // Fetch the complete employee details to ensure we have department and bank details
@@ -234,7 +231,7 @@ export default function SalaryReport() {
       try {
         // Get employee by name - this should return the full employee entity
         // const empResponse = await axios.get(
-        //   `https://api.managifyhr.com/api/employee/${user.id}/employee/by-name/${encodeURIComponent(employeeName)}`
+        //   `http://localhost:8282/api/employee/${user.id}/employee/by-name/${encodeURIComponent(employeeName)}`
         // )
         if (empResponse.status === 200) {
           employeeDetails = empResponse.data
@@ -760,7 +757,7 @@ export default function SalaryReport() {
         yPos += 10
 
         // Amount in Words
-        const amountWords = numberToWords(netPayInteger) + " Rupees Only"
+        const amountWords = numberToWords(netPayInteger)
         createCell(margin, yPos, contentWidth * 0.3, 10, "Amount in Words:", 10, "left", true)
         createCell(margin + contentWidth * 0.3, yPos, contentWidth * 0.7, 10, amountWords, 10, "center")
         yPos += 10
@@ -788,7 +785,7 @@ export default function SalaryReport() {
         createCell(margin + sigColumnWidth, yPos, sigColumnWidth, signatureRowHeight, "", 10, "left")
 
         // Left column: Signature image'
-        const signature = `https://api.managifyhr.com/images/profile/${user.signature}`
+        const signature = `http://localhost:8282/images/profile/${user.signature}`
         try {
           doc.addImage(
             signature,
@@ -812,7 +809,7 @@ export default function SalaryReport() {
         }
 
         // Right column: Company logo
-        const logo = `https://api.managifyhr.com/images/profile/${user.companylogo}`
+        const logo = `http://localhost:8282/images/profile/${user.companylogo}`
         try {
           doc.addImage(
            logo,
@@ -914,7 +911,7 @@ export default function SalaryReport() {
       if (value.trim().length > 0 && user && user.id) {
         try {
           // Fetch employee list from backend for autocomplete (like ViewAttendance)
-          const res = await axios.get(`https://api.managifyhr.com/api/employee/${user.id}/employee/all`);
+          const res = await axios.get(`http://localhost:8282/api/employee/${user.id}/employee/all`);
           const employeeList = res.data || [];
           const query = value.trim().toLowerCase();
           const list = employeeList.map(emp => ({
