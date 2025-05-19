@@ -42,7 +42,7 @@ const Profile = () => {
       
       // Set preview image if available
       if (parsedUser.email) {
-        setPreviewImage(`http://localhost:8282/masteradmin/profileImg?email=${parsedUser.email}`);
+        setPreviewImage(`https://api.managifyhr.com/masteradmin/profileImg?email=${parsedUser.email}`);
       }
     }
   }, []);
@@ -63,7 +63,7 @@ const Profile = () => {
         
         // Reset image preview
         if (userData.email) {
-          setPreviewImage(`http://localhost:8282/masteradmin/profileImg?email=${userData.email}`);
+          setPreviewImage(`https://api.managifyhr.com/masteradmin/profileImg?email=${userData.email}`);
         } else {
           setPreviewImage(null);
         }
@@ -124,7 +124,7 @@ const Profile = () => {
       
       // Make API call
       const response = await axios.put(
-        "http://localhost:8282/masteradmin/update",
+        "https://api.managifyhr.com/masteradmin/update",
         formDataToSend,
         {
           headers: {
@@ -157,7 +157,7 @@ const Profile = () => {
       
       // Update the preview image with the new image path
       if (updatedUser.email) {
-        setPreviewImage(`http://localhost:8282/masteradmin/profileImg?email=${updatedUser.email}`);
+        setPreviewImage(`https://api.managifyhr.com/masteradmin/profileImg?email=${updatedUser.email}`);
       }
       
       setIsEditing(false);

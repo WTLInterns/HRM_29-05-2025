@@ -307,7 +307,7 @@ export const AppProvider = ({ children }) => {
       console.log('Fetching employees for SubAdmin ID:', subAdminId);
       
       // Fetch employees from the backend API with the dynamic SubAdmin ID
-      const response = await axios.get(`http://localhost:8282/api/employee/${subAdminId}/employee/all`);
+      const response = await axios.get(`https://api.managifyhr.com/api/employee/${subAdminId}/employee/all`);
       const employeesData = response.data;
       
       // Update state with fetched employees 

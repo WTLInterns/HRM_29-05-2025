@@ -63,7 +63,7 @@ const LeaveNotification = () => {
     const fetchEmployees = async () => {
       if (userRole === 'SUBADMIN' && subadminId) {
         try {
-          const res = await fetch(`http://localhost:8282/api/employee/${subadminId}/employee/all`);
+          const res = await fetch(`https://api.managifyhr.com/api/employee/${subadminId}/employee/all`);
           if (!res.ok) throw new Error('Failed to fetch employees');
           const data = await res.json();
           console.log('Fetched employees:', data); // Debug log
@@ -93,7 +93,7 @@ const LeaveNotification = () => {
           setLoading(false);
           return;
         }
-        const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}`);
+        const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}`);
         if (!response.ok) throw new Error('Failed to fetch leave data');
         const data = await response.json();
         const mapped = data.map(item => ({
@@ -132,7 +132,7 @@ const LeaveNotification = () => {
         setLoading(false);
         return;
       }
-      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}`);
+      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}`);
       if (!response.ok) throw new Error('Failed to fetch leave data');
       const data = await response.json();
       const mapped = data.map(item => ({
@@ -164,7 +164,7 @@ const LeaveNotification = () => {
     let empNameToUse = userRole === 'SUBADMIN' ? selectedEmployeeFullName : userFullName;
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
+      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedLeave)
@@ -184,7 +184,7 @@ const LeaveNotification = () => {
     let empNameToUse = userRole === 'SUBADMIN' ? selectedEmployeeFullName : userFullName;
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
+      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedLeave)
@@ -209,7 +209,7 @@ const LeaveNotification = () => {
     let empNameToUse = userRole === 'SUBADMIN' ? selectedEmployeeFullName : userFullName;
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${encodeURIComponent(empNameToUse)}/${deleteTargetId}`, {
+      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${encodeURIComponent(empNameToUse)}/${deleteTargetId}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete leave');
