@@ -55,7 +55,7 @@ const Dashboard = () => {
       try {
         // Use the same SUBADMIN_ID logic as Expenses.jsx
         const SUBADMIN_ID = 2;
-        const API_BASE = `https://api.managifyhr.com/api/expenses/${SUBADMIN_ID}`;
+        const API_BASE = `http://localhost:8282/api/expenses/${SUBADMIN_ID}`;
         const res = await axios.get(`${API_BASE}/getAll`);
         setExpenses(res.data || []);
       } catch (err) {
@@ -134,7 +134,7 @@ const Dashboard = () => {
   const [logoLoadAttempt, setLogoLoadAttempt] = useState(0);
   
   // Get backend URL
-  const BACKEND_URL = useMemo(() => "https://api.managifyhr.com", []);
+  const BACKEND_URL = useMemo(() => "http://localhost:8282", []);
   
   // Default image
   const defaultImage = "/image/admin-profile.jpg";
@@ -167,7 +167,7 @@ const Dashboard = () => {
       if (user && user.id) {
         try {
           const response = await axios.get(
-            `https://api.managifyhr.com/api/employee/${user.id}/employee/all`
+            `http://localhost:8282/api/employee/${user.id}/employee/all`
           );
           checkBirthdays(response.data);
         } catch (error) {
@@ -185,7 +185,7 @@ const Dashboard = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user?.id) return;
 
-      const response = await axios.get(`https://api.managifyhr.com/api/reminders/${user.id}`);
+      const response = await axios.get(`http://localhost:8282/api/reminders/${user.id}`);
       const currentDate = new Date();
       
       const dueReminder = response.data.find(reminder => {
@@ -694,7 +694,7 @@ const Dashboard = () => {
             <div className={`w-24 h-24 rounded-full ${isDarkMode ? 'bg-slate-100 border-blue-800' : 'bg-white border-blue-500'} border-4 overflow-hidden mb-4 group-hover:border-blue-400 transition-all duration-300 shadow-lg group-hover:shadow-blue-900/40`}>
               {userData.companylogo && logoLoadAttempt < 1 ? (
                 <img 
-                  src={`https://api.managifyhr.com/images/profile/${userData.companylogo}`} 
+                  src={`http://localhost:8282/images/profile/${userData.companylogo}`} 
                   alt="Company Logo" 
                   className="w-full h-full object-cover group-hover:scale-110 transition-all duration-300"
                   onError={(e) => {

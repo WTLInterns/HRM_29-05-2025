@@ -37,7 +37,7 @@ const style = (isDarkMode) => ({
   borderRadius: 2,
 });
 
-const API_BASE = `https://api.managifyhr.com/api/expenses`;
+const API_BASE = `http://localhost:8282/api/expenses`;
 
 const initialForm = {
   expenseId: "",
@@ -135,7 +135,9 @@ export default function Expenses() {
           );
           toast.success("Expense updated successfully");
         } else {
-          await axios.post(`${API_BASE}/postData`, formData, {
+          const user = JSON.parse(localStorage.getItem("user"));
+          const subadminId = user?.id;
+          await axios.post(`${API_BASE}/${subadminId}/postData`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
           toast.success("Expense added successfully");
@@ -170,7 +172,9 @@ export default function Expenses() {
   const handleConfirmDelete = async () => {
     if (!expenseToDelete) return;
     try {
-      const res = await axios.delete(`${API_BASE}/${expenseToDelete.expenseId}`);
+      const user = JSON.parse(localStorage.getItem("user"));
+      const subadminId = user?.id;
+      const res = await axios.delete(`${API_BASE}/${subadminId}/delete-expenses/${expenseToDelete.expenseId}`);
       toast.success(res.data || "Expense record deleted successfully");
       fetchExpenses();
     } catch (err) {
@@ -365,9 +369,9 @@ export default function Expenses() {
                 {editId && form.billImage && !form.billImageFile && (
                   <div className="mt-3">
                     <div className="text-[#bfc9db] text-xs mb-1">Actual Bill Image:</div>
-                    <a href={`https://api.managifyhr.com/images/profile/${form.billImage}`} target="_blank" rel="noopener noreferrer">
+                    <a href={`http://localhost:8282/images/profile/${form.billImage}`} target="_blank" rel="noopener noreferrer">
                       <img
-                        src={`https://api.managifyhr.com/images/profile/${form.billImage}`}
+                        src={`http://localhost:8282/images/profile/${form.billImage}`}
                         alt="Bill"
                         className="border border-[#223054] rounded-lg max-h-32 bg-[#17233e] cursor-pointer hover:opacity-80 transition"
                         style={{ marginTop: 10 }}
