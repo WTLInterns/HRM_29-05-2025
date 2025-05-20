@@ -37,8 +37,7 @@ const style = (isDarkMode) => ({
   borderRadius: 2,
 });
 
-const SUBADMIN_ID = 2;
-const API_BASE = `https://api.managifyhr.com/api/expenses/${SUBADMIN_ID}`;
+const API_BASE = `https://api.managifyhr.com/api/expenses`;
 
 const initialForm = {
   expenseId: "",
@@ -68,7 +67,9 @@ export default function Expenses() {
   const fetchExpenses = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${API_BASE}/getAll`);
+      const user = JSON.parse(localStorage.getItem("user"));
+      const subadminId = user?.id;
+      const res = await axios.get(`${API_BASE}/${subadminId}/getAll`);
       setExpenses(res.data || []);
     } catch (err) {
       setExpenses([]);
@@ -125,8 +126,10 @@ export default function Expenses() {
       }
       try {
         if (editId) {
+          const user = JSON.parse(localStorage.getItem("user"));
+          const subadminId = user?.id;
           await axios.put(
-            `${API_BASE}/update-expenses/${editId}`,
+            `${API_BASE}/${subadminId}/update-expenses/${editId}`,
             formData,
             { headers: { "Content-Type": "multipart/form-data" } }
           );

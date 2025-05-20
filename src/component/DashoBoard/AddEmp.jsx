@@ -2968,6 +2968,7 @@ const validateFields = () => {
       formData,
       {
         headers: {
+          
           "Content-Type": "multipart/form-data",
         },
       }

@@ -9,10 +9,7 @@ import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
 
 const LeaveNotification = () => {
-  // Delete dialog state
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [deleteTargetId, setDeleteTargetId] = useState(null);
-  // Robust user parse from localStorage
+  // --- Get subadminId/userRole FIRST ---
   let userData = null;
   try {
     const rawUser = localStorage.getItem('user');
@@ -24,6 +21,39 @@ const LeaveNotification = () => {
   }
   const subadminId = userData?.id;
   const userRole = userData?.role;
+
+  // --- Pending Leaves State ---
+  const [showPendingDialog, setShowPendingDialog] = useState(false);
+  const [pendingDate, setPendingDate] = useState('');
+  const [pendingLeaves, setPendingLeaves] = useState([]);
+  const [pendingLeavesLoading, setPendingLeavesLoading] = useState(false);
+  const [pendingLeavesError, setPendingLeavesError] = useState(null);
+
+  // Fetch pending leaves when date changes and dialog is open
+  useEffect(() => {
+    if (!showPendingDialog || !pendingDate || !subadminId) return;
+    setPendingLeavesLoading(true);
+    setPendingLeavesError(null);
+    fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/all`)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch pending leaves');
+        return res.json();
+      })
+      .then(data => {
+        // Filter for pending and date match
+        const filtered = data.filter(item =>
+          item.status === 'Pending' &&
+          (item.fromDate === pendingDate || item.toDate === pendingDate)
+        );
+        setPendingLeaves(filtered);
+      })
+      .catch(err => setPendingLeavesError(err.message || 'Unknown error'))
+      .finally(() => setPendingLeavesLoading(false));
+  }, [showPendingDialog, pendingDate, subadminId]);
+
+  // Delete dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState(null);
   // For employee, fallback to firstName + lastName if fullName missing
   let userFullName = userData?.fullName;
   if (!userFullName && userData?.firstName && userData?.lastName) {
@@ -235,83 +265,172 @@ const LeaveNotification = () => {
     <div className="p-4">
     <div className={`leave-notification-container ${isDarkMode ? 'dark' : 'light'}`}>
       <h2 className="leave-notification-title">Leave Approval</h2>
+      {/* View Pending Leaves Button */}
 
-      {/* Subadmin: Autocomplete employee search */}
-      {userRole === 'SUBADMIN' && (
-        <div style={{ marginBottom: '1rem', position: 'relative', maxWidth: 400 }}>
+
+      {/* Pending Leaves Dialog */}
+      <Dialog
+        open={showPendingDialog}
+        onClose={() => setShowPendingDialog(false)}
+        aria-labelledby="pending-leaves-dialog-title"
+        PaperProps={{
+          style: {
+            background: isDarkMode ? '#232b36' : '#fff',
+            borderRadius: 12,
+            minWidth: 500,
+            border: isDarkMode ? '2px solid #38bdf8' : '2px solid #1976d2',
+            boxShadow: '0 0 18px 0 #38bdf8',
+            color: isDarkMode ? '#fff' : '#222',
+          }
+        }}
+      >
+        <DialogTitle
+          id="pending-leaves-dialog-title"
+          style={{
+            color: '#3366ff',
+            fontWeight: 700,
+            fontSize: 22,
+            marginBottom: 0,
+            letterSpacing: 0.5
+          }}
+        >
+          View Pending Leaves by Date
+        </DialogTitle>
+        <DialogContent style={{paddingTop: 10, paddingBottom: 6}}>
           <input
-            type="text"
-            className="search-input"
-            placeholder="Search by employee name..."
-            value={searchTerm}
-            onChange={e => {
-              setSearchTerm(e.target.value);
-              setShowSuggestions(true);
-            }}
-            onFocus={() => setShowSuggestions(true)}
-            autoComplete="off"
-          />
-          {showSuggestions && searchTerm && filteredEmployees.length > 0 && (
-            <ul style={{
-              position: 'absolute',
-              zIndex: 10,
-              background: isDarkMode ? '#222' : '#fff',
-              color: isDarkMode ? '#fff' : '#222',
-              width: '100%',
+            type="date"
+            value={pendingDate}
+            onChange={e => setPendingDate(e.target.value)}
+            style={{
+              fontSize: 17,
+              padding: '8px 12px',
+              borderRadius: 6,
               border: '1px solid #ccc',
-              borderRadius: 4,
-              maxHeight: 180,
-              overflowY: 'auto',
-              margin: 0,
-              padding: 0,
-              listStyle: 'none',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-            }}>
-              {filteredEmployees.map(emp => {
-                // Fallback for full name
-                let fullName = '';
-                if (emp.fullName && typeof emp.fullName === 'string') {
-                  fullName = emp.fullName;
-                } else if (emp.firstName && emp.lastName) {
-                  fullName = `${emp.firstName} ${emp.lastName}`;
-                } else if (emp.empName) {
-                  fullName = emp.empName;
-                } else {
-                  fullName = 'Unknown';
-                }
-                return (
-                  <li
-                    key={emp.empId || fullName}
-                    style={{ padding: '8px 12px', cursor: 'pointer' }}
-                    onClick={() => {
-                      setSelectedEmployeeFullName(fullName);
-                      setSearchTerm(fullName);
-                      setShowSuggestions(false);
-                    }}
-                  >
-                    {fullName}
-                  </li>
-                );
-              })}
-            </ul>
+              marginBottom: 16,
+              background: isDarkMode ? '#232b36' : '#fff',
+              color: isDarkMode ? '#fff' : '#222',
+            }}
+          />
+          {pendingDate && (
+            <div style={{marginTop: 10}}>
+              {pendingLeavesLoading ? (
+                <div style={{color: isDarkMode ? '#fff' : '#222'}}>Loading...</div>
+              ) : pendingLeavesError ? (
+                <div style={{color: '#f87171'}}>{pendingLeavesError}</div>
+              ) : pendingLeaves.length === 0 ? (
+                <div style={{color: isDarkMode ? '#fff' : '#222'}}>No pending leaves found for this date.</div>
+              ) : (
+                <table className="leave-table" style={{marginTop: 10, width: '100%'}}>
+                  <thead>
+                    <tr>
+                      <th>Employee Name</th>
+                      <th>Start Date</th>
+                      <th>End Date</th>
+                      <th>Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pendingLeaves.map(item => (
+                      <tr key={item.leaveId}>
+                        <td>{item.employee?.fullName || '-'}</td>
+                        <td>{item.fromDate}</td>
+                        <td>{item.toDate}</td>
+                        <td>{item.reason}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           )}
-        </div>
-      )}
+        </DialogContent>
+        <DialogActions style={{padding: 18, paddingTop: 0}}>
+          <Button
+            onClick={() => setShowPendingDialog(false)}
+            variant="outlined"
+            style={{
+              color: isDarkMode ? '#38bdf8' : '#1976d2',
+              borderColor: isDarkMode ? '#38bdf8' : '#1976d2',
+              fontWeight: 600,
+              fontSize: 17,
+              minWidth: 110,
+              background: isDarkMode ? '#232b36' : '#fff',
+              letterSpacing: 0.5
+            }}
+          >
+            CLOSE
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {/* Show message if subadmin and no employee selected */}
+      <div style={{ marginBottom: '1rem', position: 'relative', maxWidth: 400 }}>
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search by employee name..."
+          value={searchTerm}
+          onChange={e => {
+            setSearchTerm(e.target.value);
+            setShowSuggestions(true);
+          }}
+          onFocus={() => setShowSuggestions(true)}
+          autoComplete="off"
+        />
+        {showSuggestions && searchTerm && filteredEmployees.length > 0 && (
+          <ul style={{
+            position: 'absolute',
+            zIndex: 10,
+            background: isDarkMode ? '#222' : '#fff',
+            color: isDarkMode ? '#fff' : '#222',
+            width: '100%',
+            border: '1px solid #ccc',
+            borderRadius: 4,
+            maxHeight: 180,
+            overflowY: 'auto',
+            margin: 0,
+            padding: 0,
+            listStyle: 'none',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            {filteredEmployees.map(emp => {
+              let fullName = '';
+              if (emp.fullName && typeof emp.fullName === 'string') {
+                fullName = emp.fullName;
+              } else if (emp.firstName && emp.lastName) {
+                fullName = `${emp.firstName} ${emp.lastName}`;
+              } else if (emp.empName) {
+                fullName = emp.empName;
+              } else {
+                fullName = 'Unknown';
+              }
+              return (
+                <li
+                  key={emp.empId || fullName}
+                  style={{ padding: '8px 12px', cursor: 'pointer' }}
+                  onClick={() => {
+                    setSelectedEmployeeFullName(fullName);
+                    setSearchTerm(fullName);
+                    setShowSuggestions(false);
+                  }}
+                >
+                  {fullName}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
       {userRole === 'SUBADMIN' && !selectedEmployeeFullName && (
         <div style={{margin: '1rem 0', color: 'orange'}}>Please select an employee to view leave requests.</div>
       )}
-
-      <div className="search-section">
-        <button
-          className={`view-leave-btn ${showStatusSummary ? 'active' : ''}`}
-          onClick={() => setShowStatusSummary(!showStatusSummary)}
-        >
-          {showStatusSummary ? 'Hide Status' : 'View Status'}
+      <div className="leave-actions-row" style={{marginTop: '1rem', display: 'flex', gap: '1rem'}}>
+        <button className="view-leave-btn" onClick={() => setShowStatusSummary(!showStatusSummary)}>
+          View Status
+        </button>
+        <button className="view-leave-btn" onClick={() => setShowPendingDialog(true)}>
+          View Pending Leaves
         </button>
       </div>
-
       {showStatusSummary && (
         <div className="status-summary">
           <div className="status-counts">
@@ -367,6 +486,7 @@ const LeaveNotification = () => {
         </div>
       )}
 
+      <div className="actions-table-gap"></div>
       <div className="table-container">
         <table className="leave-table">
           <thead>

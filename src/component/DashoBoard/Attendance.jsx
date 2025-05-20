@@ -521,34 +521,33 @@ export default function Attendance() {
 
       const results = await Promise.allSettled(promises);
       let successCount = 0;
+      let hasError = false;
+      
       results.forEach(result => {
         if (result.status === "fulfilled") {
           const { type, records } = result.value;
-          if (type === "add") {
+          if (type === "add" || type === "update") {
             successCount += records.length;
             // Show individual toasts only if there are few records
             if (records.length <= 3) {
               records.forEach(rec => {
-                toast.success(`Added attendance for ${formatDate(rec.date)}: ${rec.status}`);
-              });
-            }
-          } else if (type === "update") {
-            successCount += records.length;
-            // Show individual toasts only if there are few records
-            if (records.length <= 3) {
-              records.forEach(rec => {
-                toast.success(`Updated attendance for ${formatDate(rec.date)}: ${rec.status}`);
+                toast.success(`${type === 'add' ? 'Added' : 'Updated'} attendance for ${formatDate(rec.date)}: ${rec.status}`);
               });
             }
           }
         } else {
-          toast.error(`Error processing bulk attendance: ${result.reason}`);
+          hasError = true;
+          console.error('Attendance error:', result.reason);
+          // Don't show error toast as we'll show success for partial completion
         }
       });
       
       // Show a summary toast if there are many records
-      if (successCount > 3) {
-        toast.success(`Successfully marked attendance for ${successCount} dates`, {
+      if (successCount > 0) {
+        const message = hasError
+          ? `Successfully marked ${successCount} attendance records. Some records may need review.`
+          : `Successfully marked attendance for ${successCount} dates`;
+        toast.success(message, {
           duration: 5000,
           style: {
             background: '#2ecc71',
