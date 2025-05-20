@@ -5062,49 +5062,34 @@ const handleEditEmp = (employee) => {
           </div>
         </div>
       )}
-      {/* Always render the confirmation dialog here, outside any conditional rendering */}
-      {confirmDialog.open && (
-        <ConfirmDialog
-          open={confirmDialog.open}
-          title={
-            confirmDialog.type === "delete"
-              ? "Confirm Deletion"
-              : "Send Login Details"
+      {/* Render ConfirmDialog for delete and email actions */}
+      <ConfirmDialog
+        open={confirmDialog.open}
+        title={
+          confirmDialog.type === 'delete'
+            ? 'Confirm Delete'
+            : confirmDialog.type === 'sendEmail'
+            ? 'Send Login Details'
+            : ''
+        }
+        message={
+          confirmDialog.type === 'delete'
+            ? 'Are you sure you want to delete this employee? This action cannot be undone.'
+            : confirmDialog.type === 'sendEmail'
+            ? 'Send login details to this employee?'
+            : ''
+        }
+        confirmText={confirmDialog.type === 'delete' ? 'Delete' : 'Send'}
+        cancelText="Cancel"
+        onConfirm={() => {
+          if (confirmDialog.type === 'delete') {
+            confirmedDeleteEmp(confirmDialog.empId);
+          } else if (confirmDialog.type === 'sendEmail') {
+            confirmedSendLoginDetails(confirmDialog.empId);
           }
-          message={
-            confirmDialog.type === "delete"
-              ? `Are you sure you want to delete this employee?\nName: ${employees.find(
-                  (e) => e.empId === confirmDialog.empId
-                ).firstName} ${employees.find(
-                  (e) => e.empId === confirmDialog.empId
-                ).lastName}, Email: ${employees.find(
-                  (e) => e.empId === confirmDialog.empId
-                ).email}`
-              : `Send login details to ${employees.find(
-                  (e) => e.empId === confirmDialog.empId
-                ).firstName} ${employees.find(
-                  (e) => e.empId === confirmDialog.empId
-                ).lastName} (${employees.find(
-                  (e) => e.empId === confirmDialog.empId
-                ).email})?`
-          }
-          confirmText={
-            confirmDialog.type === "delete" ? "Yes, Delete" : "Send Email"
-          }
-          cancelText="Cancel"
-          onConfirm={() => {
-            if (confirmDialog.type === "delete") {
-              handleDeleteEmp(confirmDialog.empId);
-            } else if (confirmDialog.type === "sendEmail") {
-              confirmedSendLoginDetails(confirmDialog.empId);
-            }
-            setConfirmDialog({ open: false, type: "", empId: null });
-          }}
-          onCancel={() =>
-            setConfirmDialog({ open: false, type: "", empId: null })
-          }
-        />
-      )}
+        }}
+        onCancel={() => setConfirmDialog({ open: false, type: '', empId: null })}
+      />
     </div>
   );
 }
