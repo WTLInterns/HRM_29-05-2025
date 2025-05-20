@@ -34,7 +34,7 @@ const LeaveNotification = () => {
     if (!showPendingDialog || !pendingDate || !subadminId) return;
     setPendingLeavesLoading(true);
     setPendingLeavesError(null);
-    fetch(`http://localhost:8282/api/leaveform/${subadminId}/all`)
+    fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/all`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to fetch pending leaves');
         return res.json();
@@ -73,27 +73,44 @@ const LeaveNotification = () => {
   // For autocomplete
   const [searchTerm, setSearchTerm] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const filteredEmployees = employees.filter(emp => {
-    // Fallback to emp.fullName or emp.firstName/lastName or emp.empName
-    let fullName = '';
-    if (emp.fullName && typeof emp.fullName === 'string') {
-      fullName = emp.fullName;
-    } else if (emp.firstName && emp.lastName) {
-      fullName = `${emp.firstName} ${emp.lastName}`;
-    } else if (emp.empName) {
-      fullName = emp.empName;
-    } else {
-      fullName = 'Unknown';
+  const [suggestions, setSuggestions] = useState([]);
+
+  // Update suggestions (like Attendance)
+  useEffect(() => {
+    const query = searchTerm.trim().toLowerCase();
+    if (!query) {
+      setSuggestions([]);
+      return;
     }
-    return fullName.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+    const list = employees.map(emp => {
+      let fullName = '';
+      if (emp.fullName && typeof emp.fullName === 'string') {
+        fullName = emp.fullName;
+      } else if (emp.firstName && emp.lastName) {
+        fullName = `${emp.firstName} ${emp.lastName}`;
+      } else if (emp.empName) {
+        fullName = emp.empName;
+      } else {
+        fullName = 'Unknown';
+      }
+      return { empId: emp.empId, fullName };
+    });
+    const startsWith = [], endsWith = [], includes = [];
+    list.forEach(item => {
+      const name = item.fullName.toLowerCase();
+      if (name.startsWith(query)) startsWith.push(item);
+      else if (name.endsWith(query)) endsWith.push(item);
+      else if (name.includes(query)) includes.push(item);
+    });
+    setSuggestions([...startsWith, ...endsWith, ...includes].slice(0, 10));
+  }, [searchTerm, employees]);
 
   // Fetch employees for subadmin
   useEffect(() => {
     const fetchEmployees = async () => {
       if (userRole === 'SUBADMIN' && subadminId) {
         try {
-          const res = await fetch(`http://localhost:8282/api/employee/${subadminId}/employee/all`);
+          const res = await fetch(`https://api.managifyhr.com/api/employee/${subadminId}/employee/all`);
           if (!res.ok) throw new Error('Failed to fetch employees');
           const data = await res.json();
           console.log('Fetched employees:', data); // Debug log
@@ -123,7 +140,7 @@ const LeaveNotification = () => {
           setLoading(false);
           return;
         }
-        const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}`);
+        const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}`);
         if (!response.ok) throw new Error('Failed to fetch leave data');
         const data = await response.json();
         const mapped = data.map(item => ({
@@ -162,7 +179,7 @@ const LeaveNotification = () => {
         setLoading(false);
         return;
       }
-      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}`);
+      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}`);
       if (!response.ok) throw new Error('Failed to fetch leave data');
       const data = await response.json();
       const mapped = data.map(item => ({
@@ -194,7 +211,7 @@ const LeaveNotification = () => {
     let empNameToUse = userRole === 'SUBADMIN' ? selectedEmployeeFullName : userFullName;
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
+      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedLeave)
@@ -214,7 +231,7 @@ const LeaveNotification = () => {
     let empNameToUse = userRole === 'SUBADMIN' ? selectedEmployeeFullName : userFullName;
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
+      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${empNameToUse}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedLeave)
@@ -239,7 +256,7 @@ const LeaveNotification = () => {
     let empNameToUse = userRole === 'SUBADMIN' ? selectedEmployeeFullName : userFullName;
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8282/api/leaveform/${subadminId}/${encodeURIComponent(empNameToUse)}/${deleteTargetId}`, {
+      const response = await fetch(`https://api.managifyhr.com/api/leaveform/${subadminId}/${encodeURIComponent(empNameToUse)}/${deleteTargetId}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete leave');
@@ -364,62 +381,60 @@ const LeaveNotification = () => {
       </Dialog>
 
       <div style={{ marginBottom: '1rem', position: 'relative', maxWidth: 400 }}>
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Search by employee name..."
-          value={searchTerm}
-          onChange={e => {
-            setSearchTerm(e.target.value);
-            setShowSuggestions(true);
+  <input
+    type="text"
+    className="search-input"
+    placeholder="Enter employee name"
+    value={searchTerm}
+    onChange={e => {
+      setSearchTerm(e.target.value);
+      setShowSuggestions(true);
+      // Only clear selectedEmployeeFullName if user clears the box
+      if (e.target.value === '') setSelectedEmployeeFullName('');
+    }}
+    onFocus={() => setShowSuggestions(true)}
+    autoComplete="off"
+    style={{ width: '100%', padding: '10px', borderRadius: 6, border: '1px solid #ccc', fontSize: 16 }}
+  />
+  {showSuggestions && searchTerm && suggestions.length > 0 && (
+    <ul style={{
+      position: 'absolute',
+      zIndex: 10,
+      background: isDarkMode ? '#222' : '#fff',
+      color: isDarkMode ? '#fff' : '#222',
+      width: '100%',
+      border: '1px solid #ccc',
+      borderRadius: 4,
+      maxHeight: 180,
+      overflowY: 'auto',
+      margin: 0,
+      padding: 0,
+      listStyle: 'none',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+    }}>
+      {suggestions.map(emp => (
+        <li
+          key={emp.empId || emp.fullName}
+          style={{ padding: '8px 12px', cursor: 'pointer' }}
+          onClick={() => {
+            setSelectedEmployeeFullName(emp.fullName);
+            setSearchTerm(emp.fullName);
+            setShowSuggestions(false);
+          // Immediately fetch leaves for this employee
+            if (userRole === 'SUBADMIN') {
+              // fetchLeaves is an inner function, so trigger by updating selectedEmployeeFullName
+              // which is already handled by the useEffect
+            }
           }}
-          onFocus={() => setShowSuggestions(true)}
-          autoComplete="off"
-        />
-        {showSuggestions && searchTerm && filteredEmployees.length > 0 && (
-          <ul style={{
-            position: 'absolute',
-            zIndex: 10,
-            background: isDarkMode ? '#222' : '#fff',
-            color: isDarkMode ? '#fff' : '#222',
-            width: '100%',
-            border: '1px solid #ccc',
-            borderRadius: 4,
-            maxHeight: 180,
-            overflowY: 'auto',
-            margin: 0,
-            padding: 0,
-            listStyle: 'none',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-          }}>
-            {filteredEmployees.map(emp => {
-              let fullName = '';
-              if (emp.fullName && typeof emp.fullName === 'string') {
-                fullName = emp.fullName;
-              } else if (emp.firstName && emp.lastName) {
-                fullName = `${emp.firstName} ${emp.lastName}`;
-              } else if (emp.empName) {
-                fullName = emp.empName;
-              } else {
-                fullName = 'Unknown';
-              }
-              return (
-                <li
-                  key={emp.empId || fullName}
-                  style={{ padding: '8px 12px', cursor: 'pointer' }}
-                  onClick={() => {
-                    setSelectedEmployeeFullName(fullName);
-                    setSearchTerm(fullName);
-                    setShowSuggestions(false);
-                  }}
-                >
-                  {fullName}
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
+        >
+          {emp.fullName}
+        </li>
+      ))}
+    </ul>
+  )}
+  {/* Prompt below input when empty */}
+ 
+</div>
       {userRole === 'SUBADMIN' && !selectedEmployeeFullName && (
         <div style={{margin: '1rem 0', color: 'orange'}}>Please select an employee to view leave requests.</div>
       )}
