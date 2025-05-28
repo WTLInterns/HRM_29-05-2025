@@ -53,7 +53,7 @@ const TrackEmployee = () => {
       const subAdminId = user?.id;
       if (subAdminId) {
         axios
-          .get(`https://api.managifyhr.com/api/employee/${subAdminId}/employee/all`)
+          .get(`http://localhost:8282/api/employee/${subAdminId}/employee/all`)
           .then(res => {
             setEmployeeList(res.data || []);
           })

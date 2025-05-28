@@ -16,16 +16,36 @@ export function exportAttendanceToExcel(attendanceData, employeeObj) {
   const formattedData = sortedAttendance.map((rec) => ({
     'Employee ID': rec.employee?.empId || employeeObj?.empId || '',
     'Employee Name': rec.employee ? `${rec.employee.firstName} ${rec.employee.lastName}` : (employeeObj ? `${employeeObj.firstName} ${employeeObj.lastName}` : ''),
-    Date: formatDate(rec.date),
-    Status: rec.status,
-    Reason: rec.reason || '',
+    'Date': formatDate(rec.date),
+    'Status': rec.status || '',
+    'Reason': rec.reason || '',
+    'Working Hours': rec.workingHours || '',
+    'Break Duration': rec.breakDuration || '',
+    'Punch In Time': rec.punchInTime || '',
+    'Punch Out Time': rec.punchOutTime || '',
+    'Lunch In Time': rec.lunchInTime || '',
+    'Lunch Out Time': rec.lunchOutTime || '',
+    'Work Type': rec.workType || '',
   }));
 
   // Create a worksheet
   const worksheet = XLSX.utils.json_to_sheet(formattedData);
 
   // Style the header row: bold and black
-  const headerNames = ['Employee ID', 'Employee Name', 'Date', 'Status', 'Reason'];
+  const headerNames = [
+    'Employee ID',
+    'Employee Name',
+    'Date',
+    'Status',
+    'Reason',
+    'Working Hours',
+    'Break Duration',
+    'Punch In Time',
+    'Punch Out Time',
+    'Lunch In Time',
+    'Lunch Out Time',
+    'Work Type',
+  ];
   for (let c = 0; c < headerNames.length; c++) {
     const cellRef = XLSX.utils.encode_cell({ r: 0, c });
     if (worksheet[cellRef]) {
@@ -61,6 +81,13 @@ export function exportAttendanceToExcel(attendanceData, employeeObj) {
     { wch: 15 },  // Date
     { wch: 18 },  // Status
     { wch: 30 },  // Reason
+    { wch: 16 },  // Working Hours
+    { wch: 16 },  // Break Duration
+    { wch: 16 },  // Punch In Time
+    { wch: 16 },  // Punch Out Time
+    { wch: 16 },  // Lunch In Time
+    { wch: 16 },  // Lunch Out Time
+    { wch: 14 },  // Work Type
   ];
 
   // Create a workbook and add the worksheet

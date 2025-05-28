@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import Attendance from "./Attendance";
 import TrackEmployee from "./TrackEmployee";
+import Openings from "./Openings";
 import SalarySheet from "./SalarySheet";
 import SalarySlip from "./SalarySlip";
 import AddEmp from "./AddEmp";
@@ -56,7 +57,7 @@ const Dashboard = () => {
       try {
         // Use the same SUBADMIN_ID logic as Expenses.jsx
         const SUBADMIN_ID = 2;
-        const API_BASE = `https://api.managifyhr.com/api/expenses/${SUBADMIN_ID}`;
+        const API_BASE = `http://localhost:8282/api/expenses/${SUBADMIN_ID}`;
         const res = await axios.get(`${API_BASE}/getAll`);
         setExpenses(res.data || []);
       } catch (err) {
@@ -108,6 +109,8 @@ const Dashboard = () => {
   }, []);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [attendanceDropdownOpen, setAttendanceDropdownOpen] = useState(false);
+  const [certificatesDropdownOpen, setCertificatesDropdownOpen] = useState(false);
+  const [openingsDropdownOpen, setOpeningsDropdownOpen] = useState(false);
 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -135,7 +138,7 @@ const Dashboard = () => {
   const [logoLoadAttempt, setLogoLoadAttempt] = useState(0);
   
   // Get backend URL
-  const BACKEND_URL = useMemo(() => "https://api.managifyhr.com", []);
+  const BACKEND_URL = useMemo(() => "http://localhost:8282", []);
   
   // Default image
   const defaultImage = "/image/admin-profile.jpg";
@@ -168,7 +171,7 @@ const Dashboard = () => {
       if (user && user.id) {
         try {
           const response = await axios.get(
-            `https://api.managifyhr.com/api/employee/${user.id}/employee/all`
+            `http://localhost:8282/api/employee/${user.id}/employee/all`
           );
           checkBirthdays(response.data);
         } catch (error) {
@@ -186,7 +189,7 @@ const Dashboard = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       if (!user?.id) return;
 
-      const response = await axios.get(`https://api.managifyhr.com/api/reminders/${user.id}`);
+      const response = await axios.get(`http://localhost:8282/api/reminders/${user.id}`);
       const currentDate = new Date();
       
       const dueReminder = response.data.find(reminder => {
@@ -530,6 +533,13 @@ const Dashboard = () => {
   const toggleAttendanceDropdown = () => {
     setAttendanceDropdownOpen(!attendanceDropdownOpen);
   };
+  const toggleCertificatesDropdown = () => {
+    setCertificatesDropdownOpen(!certificatesDropdownOpen);
+  };
+  const toggleOpeningsDropdown = () => {
+    setOpeningsDropdownOpen(!openingsDropdownOpen);
+  };
+
 
   const handleLogoutClick = () => {
     setShowLogoutModal(true);
@@ -584,6 +594,26 @@ const Dashboard = () => {
       to: "/dashboard/track-employee",
       label: "Track Employee",
       icon: <FaUserCog />
+    },
+    // Openings Section with Dropdowns
+    {
+      label: "Openings",
+      icon: <FaArrowDown className="text-blue-400" />,
+      dropdown: true,
+      children: [
+        {
+          to: "/dashboard/openings",
+          label: "Add Openings",
+          icon: <FaArrowDown className="text-blue-400" />,
+          state: { activeTab: 'add' }
+        },
+        {
+          to: "/dashboard/openings",
+          label: "Check Resume",
+          icon: <FaArrowDown className="text-blue-400" />,
+          state: { activeTab: 'resume' }
+        }
+      ]
     }
   ];
 
@@ -700,7 +730,7 @@ const Dashboard = () => {
             <div className={`w-24 h-24 rounded-full ${isDarkMode ? 'bg-slate-100 border-blue-800' : 'bg-white border-blue-500'} border-4 overflow-hidden mb-4 group-hover:border-blue-400 transition-all duration-300 shadow-lg group-hover:shadow-blue-900/40`}>
               {userData.companylogo && logoLoadAttempt < 1 ? (
                 <img 
-                  src={`https://api.managifyhr.com/images/profile/${userData.companylogo}`} 
+                  src={`http://localhost:8282/images/profile/${userData.companylogo}`} 
                   alt="Company Logo" 
                   className="w-full h-full object-cover group-hover:scale-110 transition-all duration-300"
                   onError={(e) => {
@@ -748,44 +778,62 @@ const Dashboard = () => {
         <nav className="px-4 py-3 flex-grow overflow-y-auto custom-scrollbar">
           <div className="space-y-0">
             {navLinks.map((link, index) => (
-              link.dropdown ? (
-                <div key={index} className="mb-1 animate-fadeIn" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <button
-                    onClick={link.label === "Attendance" ? toggleAttendanceDropdown : toggleCertificatesDropdown}
-                    className="flex items-center justify-between w-full gap-2 p-2 rounded hover:bg-slate-700 hover:text-blue-400 transition-all duration-300 menu-item ripple"
-                  >
-                    <div className="flex items-center gap-2">
-                      {link.icon && <span className="text-blue-400 w-6">{link.icon}</span>} {link.label}
-                    </div>
-                    {(link.label === "Attendance" ? attendanceDropdownOpen : certificatesDropdownOpen) ? 
-                      <MdKeyboardArrowDown className="transition-transform duration-300 text-blue-400" /> : 
-                      <MdKeyboardArrowRight className="transition-transform duration-300 text-blue-400" />
-                    }
-                  </button>
-                  {((link.label === "Attendance" && attendanceDropdownOpen) || 
-                    (link.label === "Certificates" && certificatesDropdownOpen)) && (
-                    <div className="pl-8 mt-1 space-y-1 animate-slideIn">
-                      {link.children.map((child, childIndex) => (
-                        <Link
-                          key={childIndex}
-                          to={child.to}
-                          className="flex items-center gap-2 p-2 rounded hover:bg-slate-700 hover:text-blue-400 transition-all duration-300 menu-item hover:translate-x-2"
-                          onClick={closeMobileMenu}
-                        >
-                          {child.icon && <span className="text-blue-400 w-6">{child.icon}</span>} {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Link
+               link.dropdown ? (
+                 <div key={index} className="mb-1 animate-fadeIn" style={{ animationDelay: `${index * 0.1}s` }}>
+                   <button
+                     onClick={
+                       link.label === "Attendance"
+                         ? toggleAttendanceDropdown
+                         : link.label === "Certificates"
+                         ? toggleCertificatesDropdown
+                         : link.label === "Openings"
+                         ? toggleOpeningsDropdown
+                         : undefined
+                     }
+                     className="flex items-center justify-between w-full gap-2 p-2 rounded hover:bg-slate-700 hover:text-blue-400 transition-all duration-300 menu-item ripple"
+                   >
+                     <div className="flex items-center gap-2">
+                       {link.icon && <span className="text-blue-400 w-6">{link.icon}</span>} {link.label}
+                     </div>
+                     {(link.label === "Attendance"
+                       ? attendanceDropdownOpen
+                       : link.label === "Certificates"
+                       ? certificatesDropdownOpen
+                       : link.label === "Openings"
+                       ? openingsDropdownOpen
+                       : false
+                     ) ? (
+                       <MdKeyboardArrowDown className="transition-transform duration-300 text-blue-400" />
+                     ) : (
+                       <MdKeyboardArrowRight className="transition-transform duration-300 text-blue-400" />
+                     )}
+                   </button>
+                   {((link.label === "Attendance" && attendanceDropdownOpen) ||
+                     (link.label === "Certificates" && certificatesDropdownOpen) ||
+                     (link.label === "Openings" && openingsDropdownOpen)) && (
+                     <div className="pl-8 mt-1 space-y-1 animate-slideIn">
+                       {link.children.map((child, childIndex) => (
+                         <Link
+                           key={childIndex}
+                           to={child.to}
+                           state={child.state}
+                           className="flex items-center gap-2 p-2 rounded hover:bg-slate-700 hover:text-blue-400 transition-all duration-300 menu-item hover:translate-x-2"
+                           onClick={closeMobileMenu}
+                         >
+                           {child.icon && <span className="text-blue-400 w-6">{child.icon}</span>} {child.label}
+                         </Link>
+                       ))}
+                     </div>
+                   )}
+                 </div>
+               ) : (
+                 <Link
                   key={index}
                   to={link.to}
                   className="flex items-center gap-2 p-2 my-1 rounded hover:bg-slate-700 hover:text-blue-400 transition-all duration-300 menu-item ripple animate-fadeIn"
                   style={{ animationDelay: `${index * 0.1}s` }}
                   onClick={closeMobileMenu}
-                >
+                 >
                   {link.icon && <span className="text-blue-400 w-6">{link.icon}</span>} {link.label}
                 </Link>
               )
@@ -857,6 +905,7 @@ const Dashboard = () => {
             <Route path="certificates" element={<Certificates />} />
             <Route path="reminders" element={<Reminders />} />
             <Route path="track-employee" element={<TrackEmployee />} />
+<Route path="openings" element={<Openings />} />
             <Route path="*" element={<DashoBoardRouter />} />
           </Routes>
         </div>

@@ -64,7 +64,7 @@ const Agreement_Contract_Letter = () => {
         const email = user.email || "arbaj.shaikh2034@gmail.com";
         
         console.log("Fetching subadmin data for email:", email);
-        const response = await axios.get(`https://api.managifyhr.com/api/subadmin/subadmin-by-email/${email}`);
+        const response = await axios.get(`http://localhost:8282/api/subadmin/subadmin-by-email/${email}`);
         console.log("Subadmin API Response:", response.data);
         setSubadmin(response.data);
         fetchEmployees(response.data.id);
@@ -83,7 +83,7 @@ const Agreement_Contract_Letter = () => {
   const fetchEmployees = async (subadminId) => {
     try {
       console.log(`Fetching employees for subadmin ID: ${subadminId}`);
-      const response = await axios.get(`https://api.managifyhr.com/api/employee/${subadminId}/employee/all`);
+      const response = await axios.get(`http://localhost:8282/api/employee/${subadminId}/employee/all`);
       console.log("Employees API Response:", response.data);
       setEmployees(response.data);
       setLoading(false);
@@ -358,7 +358,7 @@ const Agreement_Contract_Letter = () => {
       
       // Send to API
       const response = await axios.post(
-        `https://api.managifyhr.com/api/certificate/send/${subadmin.id}/${encodeURIComponent(selectedEmployee.firstName + ' ' + selectedEmployee.lastName)}/agreement`,
+        `http://localhost:8282/api/certificate/send/${subadmin.id}/${encodeURIComponent(selectedEmployee.firstName + ' ' + selectedEmployee.lastName)}/agreement`,
         formData,
         {
           headers: {
@@ -598,7 +598,7 @@ const Agreement_Contract_Letter = () => {
                   <div className="flex-shrink-0 mr-4">
                     {subadmin && subadmin.companylogo ? (
                       <img 
-                        src={`https://api.managifyhr.com/images/profile/${subadmin.companylogo}`} 
+                        src={`http://localhost:8282/images/profile/${subadmin.companylogo}`} 
                         alt="Company Logo" 
                         className="h-20 object-contain" 
                         onError={(e) => {
@@ -733,7 +733,7 @@ const Agreement_Contract_Letter = () => {
                       {subadmin && subadmin.signature ? (
                         <div className="border-b border-gray-300 pb-1 w-48">
                           <img 
-                            src={`https://api.managifyhr.com/images/profile/${subadmin.signature}`} 
+                            src={`http://localhost:8282/images/profile/${subadmin.signature}`} 
                             alt="Signature" 
                             className="h-16 mb-2 object-contain" 
                             onError={(e) => {
