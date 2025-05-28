@@ -2,7 +2,7 @@ import React from "react";
 import { useApp } from "../../context/AppContext";
 import axios from "axios";
 import "./animations.css";
-import { FaUsers, FaUserCheck, FaUserMinus, FaBriefcase, FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { FaUsers, FaUserCheck, FaUserMinus, FaBriefcase, FaArrowUp, FaArrowDown, FaUserCog } from "react-icons/fa";
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
@@ -209,5 +209,42 @@ const Home = () => {
     </div>
   );
 };
+
+import { Link } from "react-router-dom";
+
+// ...rest of the Home component code
+
+<div style={{ display: 'flex' }}>
+  {/* Sidebar Navigation (custom for Dashboard) */}
+  <div className={`fixed left-0 top-0 h-full w-64 bg-slate-900 shadow-lg flex flex-col pt-8 text-white z-40`}>
+    <nav className="flex-1 px-4">
+      <ul className="space-y-1">
+        {/* Existing Leave Approval item (assumed present above) */}
+        <li>
+          <Link to="/dashboard/leave-approval" className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-blue-800/50 hover:pl-6 transition-all duration-300">
+            <span className="text-blue-400"><FaUsers /></span>
+            <span>Leave Approval</span>
+          </Link>
+        </li>
+        {/* Track Employee below Leave Approval */}
+        <li>
+          <Link to="/dashboard/track-employee" className="flex items-center gap-2 px-4 py-3 rounded-lg bg-blue-700/40 hover:bg-blue-800/60 text-blue-100 hover:text-white transition-all duration-300">
+            <FaUserCog />
+            <span>Track Employee</span>
+          </Link>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  {/* Main Content Area */}
+  <div style={{ marginLeft: '16rem', flex: 1 }}>
+    <div className="mt-6 flex justify-center">
+      <Link to="/dashboard/track-employee" className="bg-blue-700 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-800 transition-all duration-200">
+        Track Employee
+      </Link>
+    </div>
+    {/* ...rest of the original Home content goes here... */}
+  </div>
+</div>
 
 export default Home; 

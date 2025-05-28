@@ -8,6 +8,12 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
 
+  /**
+   * Component for managing leave notifications and approvals.
+   * Allows subadmins to view, approve, reject, and delete leave requests for their employees.
+   * Employees can view their own leave status and request approvals.
+   * Handles fetching and displaying leave data, employee suggestions, and managing dialog states.
+   */
 const LeaveNotification = () => {
   // --- Get subadminId/userRole FIRST ---
   let userData = null;

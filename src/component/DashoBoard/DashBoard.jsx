@@ -3,6 +3,7 @@ import ReactConfetti from "react-confetti";
 import axios from "axios";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import Attendance from "./Attendance";
+import TrackEmployee from "./TrackEmployee";
 import SalarySheet from "./SalarySheet";
 import SalarySlip from "./SalarySlip";
 import AddEmp from "./AddEmp";
@@ -10,7 +11,7 @@ import ViewAttendance from "./ViewAttendance";
 import { IoIosLogOut, IoIosPersonAdd } from "react-icons/io";
 import { LuNotebookPen } from "react-icons/lu";
 import { MdOutlinePageview, MdKeyboardArrowDown, MdKeyboardArrowRight, MdDashboard } from "react-icons/md";
-import { FaReceipt, FaCalendarAlt, FaRegIdCard, FaExclamationTriangle, FaTimes, FaSignOutAlt, FaChartPie, FaArrowUp, FaArrowDown, FaMoon, FaSun, FaFileAlt, FaBell } from "react-icons/fa";
+import { FaReceipt, FaCalendarAlt, FaRegIdCard, FaExclamationTriangle, FaTimes, FaSignOutAlt, FaChartPie, FaArrowUp, FaArrowDown, FaMoon, FaSun, FaFileAlt, FaBell, FaUserCog } from "react-icons/fa";
 import { BiSolidSpreadsheet } from "react-icons/bi";
 import { HiMenu, HiX } from "react-icons/hi";
 import { useApp } from "../../context/AppContext";
@@ -578,6 +579,11 @@ const Dashboard = () => {
       to: "/dashboard/leave-notification",
       label: "Leave Approval",
       icon: <FaExclamationTriangle />
+    },
+    {
+      to: "/dashboard/track-employee",
+      label: "Track Employee",
+      icon: <FaUserCog />
     }
   ];
 
@@ -850,6 +856,7 @@ const Dashboard = () => {
             <Route path="profileform" element={<ProfileForm />} />
             <Route path="certificates" element={<Certificates />} />
             <Route path="reminders" element={<Reminders />} />
+            <Route path="track-employee" element={<TrackEmployee />} />
             <Route path="*" element={<DashoBoardRouter />} />
           </Routes>
         </div>
