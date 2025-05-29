@@ -95,7 +95,7 @@
 //       try {
 //         console.log(`Fetching employees for subadmin ID: ${subadminId}`);
 //         const response = await axios.get(
-//           `http://localhost:8282/api/employee/${subadminId}/employee/all`
+//           `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
 //         );
 //         console.log("Fetched employees:", response.data);
 //         setEmployees(response.data);
@@ -303,7 +303,7 @@ const handleAddEmp = async (e) => {
 
     // Send request
     const response = await axios.post(
-      `http://localhost:8282/api/subadmin/add-employee/${subadminId}`,
+      `https://api.managifyhr.com/api/subadmin/add-employee/${subadminId}`,
       formData,
       {
         headers: {
@@ -319,7 +319,7 @@ const handleAddEmp = async (e) => {
 
     // Refresh the employee list
     const refreshResponse = await axios.get(
-      `http://localhost:8282/api/employee/${subadminId}/employee/all`
+      `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
     );
     setEmployees(refreshResponse.data);
 
@@ -359,7 +359,7 @@ const handleAddEmp = async (e) => {
 
 //       // Use the dynamic subadminId from state
 //       const response = await axios.post(
-//         `http://localhost:8282/api/subadmin/add-employee/${subadminId}`,
+//         `https://api.managifyhr.com/api/subadmin/add-employee/${subadminId}`,
 //         formData,
 //         {
 //           headers: {
@@ -375,7 +375,7 @@ const handleAddEmp = async (e) => {
 
 //       // Refresh the employee list
 //       const refreshResponse = await axios.get(
-//         `http://localhost:8282/api/employee/${subadminId}/employee/all`
+//         `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
 //       );
 //       setEmployees(refreshResponse.data);
 
@@ -461,7 +461,7 @@ const handleAddEmp = async (e) => {
 
 //       // Use the correct API endpoint for updating an employee based on the backend code
 //       const response = await axios.put(
-//         `http://localhost:8282/api/employee/update-employee/${subadminId}/${encodeURIComponent(fullName)}`,
+//         `https://api.managifyhr.com/api/employee/update-employee/${subadminId}/${encodeURIComponent(fullName)}`,
 //         formData,
 //         {
 //           headers: {
@@ -477,7 +477,7 @@ const handleAddEmp = async (e) => {
 
 //       // Refresh the employee list
 //       const refreshResponse = await axios.get(
-//         `http://localhost:8282/api/employee/${subadminId}/employee/all`
+//         `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
 //       );
 //       setEmployees(refreshResponse.data);
 
@@ -514,7 +514,7 @@ const handleAddEmp = async (e) => {
 
 //       // Use the dynamic subadminId from state
 //       const response = await axios.delete(
-//         `http://localhost:8282/api/employee/${subadminId}/delete/${empId}`,
+//         `https://api.managifyhr.com/api/employee/${subadminId}/delete/${empId}`,
 //         {
 //           headers: {
 //             "Content-Type": "application/json",
@@ -527,7 +527,7 @@ const handleAddEmp = async (e) => {
 
 //       // Refresh the employee list
 //       const refreshResponse = await axios.get(
-//         `http://localhost:8282/api/employee/${subadminId}/employee/all`
+//         `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
 //       );
 //       setEmployees(refreshResponse.data);
 
@@ -564,7 +564,7 @@ const handleAddEmp = async (e) => {
 //       );
 
 //       const response = await axios.post(
-//         `http://localhost:8282/api/employee/${subadminId}/${encodeURIComponent(
+//         `https://api.managifyhr.com/api/employee/${subadminId}/${encodeURIComponent(
 //           fullName
 //         )}/send-login-details`,
 //         {},
@@ -633,7 +633,7 @@ const handleAddEmp = async (e) => {
 
 //     // Profile image - using the correct field name from the backend entity (empimg)
 //     if (employee.empimg) {
-//       const profileImageUrl = `http://localhost:8282/images/profile/${employee.empimg}`;
+//       const profileImageUrl = `https://api.managifyhr.com/images/profile/${employee.empimg}`;
 //       console.log("Setting profile image URL:", profileImageUrl);
 //       setEmpImgPreview(profileImageUrl);
 
@@ -648,7 +648,7 @@ const handleAddEmp = async (e) => {
 
 //     // Aadhar image - using the correct field name from the backend entity (adharimg)
 //     if (employee.adharimg) {
-//       const aadharImageUrl = `http://localhost:8282/images/profile/${employee.adharimg}`;
+//       const aadharImageUrl = `https://api.managifyhr.com/images/profile/${employee.adharimg}`;
 //       console.log("Setting aadhar image URL:", aadharImageUrl);
 //       setAdharImgPreview(aadharImageUrl);
 
@@ -663,7 +663,7 @@ const handleAddEmp = async (e) => {
 
 //     // PAN image - using the correct field name from the backend entity (panimg)
 //     if (employee.panimg) {
-//       const panImageUrl = `http://localhost:8282/images/profile/${employee.panimg}`;
+//       const panImageUrl = `https://api.managifyhr.com/images/profile/${employee.panimg}`;
 //       console.log("Setting PAN image URL:", panImageUrl);
 //       setPanImgPreview(panImageUrl);
 
@@ -2629,7 +2629,7 @@ export default function AddEmp() {
       try {
         console.log(`Fetching employees for subadmin ID: ${subadminId}`);
         const response = await axios.get(
-          `http://localhost:8282/api/employee/${subadminId}/employee/all`
+          `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
         );
         console.log("Fetched employees:", response.data);
         setEmployees(response.data);
@@ -2864,7 +2864,7 @@ const validateFields = () => {
     }
     // Use the dynamic subadminId from state
     const response = await axios.post(
-      `http://localhost:8282/api/subadmin/add-employee/${subadminId}`,
+      `https://api.managifyhr.com/api/subadmin/add-employee/${subadminId}`,
       formData,
       {
         headers: {
@@ -2880,7 +2880,7 @@ const validateFields = () => {
 
       // Refresh the employee list
       const refreshResponse = await axios.get(
-        `http://localhost:8282/api/employee/${subadminId}/employee/all`
+        `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
       );
       setEmployees(refreshResponse.data);
 
@@ -2964,7 +2964,7 @@ const validateFields = () => {
 
       // Use the correct API endpoint for updating an employee based on the backend code
       const response = await axios.put(
-        `http://localhost:8282/api/employee/update-employee/${subadminId}/${encodeURIComponent(fullName)}`,
+        `https://api.managifyhr.com/api/employee/update-employee/${subadminId}/${encodeURIComponent(fullName)}`,
       formData,
       {
         headers: {
@@ -2981,7 +2981,7 @@ const validateFields = () => {
 
     // Refresh the employee list
     const refreshResponse = await axios.get(
-      `http://localhost:8282/api/employee/${subadminId}/employee/all`
+      `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
     );
     setEmployees(refreshResponse.data);
 
@@ -3032,7 +3032,7 @@ const confirmedDeleteEmp = async (empId) => {
 
     // Use the dynamic subadminId from state
     const response = await axios.delete(
-      `http://localhost:8282/api/employee/${subadminId}/delete/${empId}`,
+      `https://api.managifyhr.com/api/employee/${subadminId}/delete/${empId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -3045,7 +3045,7 @@ const confirmedDeleteEmp = async (empId) => {
 
     // Refresh the employee list
     const refreshResponse = await axios.get(
-      `http://localhost:8282/api/employee/${subadminId}/employee/all`
+      `https://api.managifyhr.com/api/employee/${subadminId}/employee/all`
     );
     setEmployees(refreshResponse.data);
 
@@ -3083,7 +3083,7 @@ const confirmedSendLoginDetails = async (empId) => {
       `Sending login details to employee ${fullName} under subadmin ${subadminId}. Password: ${empPassword}`
     );
     const response = await axios.post(
-      `http://localhost:8282/api/employee/${subadminId}/${encodeURIComponent(
+      `https://api.managifyhr.com/api/employee/${subadminId}/${encodeURIComponent(
         fullName
       )}/send-login-details`,
       { password: empPassword },
@@ -3154,7 +3154,7 @@ const handleEditEmp = (employee) => {
 
     // Profile image - using the correct field name from the backend entity (empimg)
     if (employee.empimg) {
-      const profileImageUrl = `http://localhost:8282/images/profile/${employee.empimg}`;
+      const profileImageUrl = `https://api.managifyhr.com/images/profile/${employee.empimg}`;
       console.log("Setting profile image URL:", profileImageUrl);
       setEmpImgPreview(profileImageUrl);
 
@@ -3169,7 +3169,7 @@ const handleEditEmp = (employee) => {
 
     // Aadhar image - using the correct field name from the backend entity (adharimg)
     if (employee.adharimg) {
-      const aadharImageUrl = `http://localhost:8282/images/profile/${employee.adharimg}`;
+      const aadharImageUrl = `https://api.managifyhr.com/images/profile/${employee.adharimg}`;
       console.log("Setting aadhar image URL:", aadharImageUrl);
       setAdharImgPreview(aadharImageUrl);
 
@@ -3184,7 +3184,7 @@ const handleEditEmp = (employee) => {
 
     // PAN image - using the correct field name from the backend entity (panimg)
     if (employee.panimg) {
-      const panImageUrl = `http://localhost:8282/images/profile/${employee.panimg}`;
+      const panImageUrl = `https://api.managifyhr.com/images/profile/${employee.panimg}`;
       console.log("Setting PAN image URL:", panImageUrl);
       setPanImgPreview(panImageUrl);
 

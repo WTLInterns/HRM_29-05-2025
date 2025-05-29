@@ -6,7 +6,30 @@ import ConfirmDialog from "./ConfirmDialog";
 import { toast } from "react-toastify";
 
 const ROLE_OPTIONS = [
-  "Java Intern", "Java Full Time", "MERN Intern", "MERN Full Stack", "Python Intern", "Python Full Time", "Frontend Developer", "Backend Developer", "HR Executive", "Sales Executive", "Accountant", "Marketing", "Other"
+  "Java Full Stack",
+  "Java Developer",
+  "MERN Developer",
+  "MERN Full Stack",
+  "Python Full Stack",
+  "Python Developer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Flutter Developer",
+  "React Native Developer",
+  "Android Developer",
+  "iOS Developer",
+  "DevOps Engineer",
+  "QA Engineer",
+  "UI/UX Designer",
+  "HR Executive",
+  "Sales Executive",
+  "Accountant",
+  "Marketing",
+  "Project Manager",
+  "Business Analyst",
+  "Data Scientist",
+  "Data Analyst",
+  "Product Manager"
 ];
 const SITE_MODE_OPTIONS = ["Work from Office", "Work From Home", "Hybrid"];
 const EXPERIENCE_OPTIONS = ["Fresher", "0-3 years", "3-5 years", "5+ years"];
@@ -51,7 +74,7 @@ const AddOpenings = () => {
   const fetchOpenings = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://localhost:8282/api/openings/${subadminId}`);
+      const res = await axios.get(`https://api.managifyhr.com/api/openings/${subadminId}`);
       setOpenings(res.data || []);
     } catch {
       setOpenings([]);
@@ -69,10 +92,10 @@ const AddOpenings = () => {
     setLoading(true);
     try {
       if (editingId) {
-        await axios.put(`http://localhost:8282/api/openings/${subadminId}/${editingId}`, form);
+        await axios.put(`https://api.managifyhr.com/api/openings/${subadminId}/${editingId}`, form);
         toast.success("Opening updated successfully!");
       } else {
-        await axios.post(`http://localhost:8282/api/openings/${subadminId}`, form);
+        await axios.post(`https://api.managifyhr.com/api/openings/${subadminId}`, form);
         toast.success("Opening added successfully!");
       }
       setShowModal(false);
@@ -88,7 +111,7 @@ const AddOpenings = () => {
       setEditingId(null);
       fetchOpenings();
     } catch (error) {
-      toast.error("Error occurred. Please try again.");
+      toast.error("Error occurred while saving opening. Please try again.");
     }
     setLoading(false);
   };
@@ -111,7 +134,9 @@ const AddOpenings = () => {
   const handleDelete = (id) => {
     setDeleteTargetId(id);
     setConfirmOpen(true);
+    // The ConfirmDialog will show, and only if the user confirms, confirmDelete will be called
   };
+
 
   // Confirm and perform deletion
   const confirmDelete = async () => {
@@ -119,11 +144,11 @@ const AddOpenings = () => {
     if (!deleteTargetId) return;
     setLoading(true);
     try {
-      await axios.delete(`http://localhost:8282/api/openings/${subadminId}/${deleteTargetId}`);
+      await axios.delete(`https://api.managifyhr.com/api/openings/${subadminId}/${deleteTargetId}`);
       toast.success("Opening deleted successfully!");
       fetchOpenings();
-    } catch {
-      toast.error("Error deleting opening.");
+    } catch (error) {
+      toast.error("Error deleting opening. Please try again.");
     }
     setLoading(false);
     setDeleteTargetId(null);
@@ -158,15 +183,15 @@ const AddOpenings = () => {
       </div>
       {/* Openings Table */}
       <div className="overflow-x-auto">
-        <table className={`min-w-full shadow-lg rounded-xl border-separate border-spacing-0 ${isDarkMode ? 'bg-slate-900' : 'bg-white'}`}
+        <table className={`min-w-full shadow-lg rounded-xl border-separate border-spacing-0 ${isDarkMode ? 'bg-slate-900' : 'bg-white'} text-sm mb-6`}
           style={{ borderCollapse: 'separate', borderSpacing: 0 }}>
           <thead>
             <tr className={isDarkMode ? "bg-slate-800" : "bg-blue-100"}>
-              <th className="p-4 font-bold text-lg text-center rounded-tl-xl border-b-2 border-blue-400">Role</th>
-              <th className="p-4 font-bold text-lg text-center border-b-2 border-blue-400">Positions</th>
-              <th className="p-4 font-bold text-lg text-center border-b-2 border-blue-400">Location</th>
-              <th className="p-4 font-bold text-lg text-center border-b-2 border-blue-400">Experience</th>
-              <th className="p-4 font-bold text-lg text-center rounded-tr-xl border-b-2 border-blue-400">Actions</th>
+              <th className="px-2 py-2 font-semibold text-base text-center rounded-tl-xl border-b-2 border-blue-400">Role</th>
+              <th className="px-2 py-2 font-semibold text-base text-center border-b-2 border-blue-400">Positions</th>
+              <th className="px-2 py-2 font-semibold text-base text-center border-b-2 border-blue-400">Location</th>
+              <th className="px-2 py-2 font-semibold text-base text-center border-b-2 border-blue-400">Experience</th>
+              <th className="px-2 py-2 font-semibold text-base text-center rounded-tr-xl border-b-2 border-blue-400">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -184,25 +209,25 @@ const AddOpenings = () => {
                     : (idx % 2 === 0 ? 'bg-white' : 'bg-blue-50')}
                   hover:bg-blue-100 dark:hover:bg-slate-700 transition-colors duration-150`}
               >
-                <td className="p-4 text-center align-middle font-medium text-base border-b border-blue-100 dark:border-slate-700">{o.role}</td>
-                <td className="p-4 text-center align-middle font-medium text-base border-b border-blue-100 dark:border-slate-700">{o.positions}</td>
-                <td className="p-4 text-center align-middle font-medium text-base border-b border-blue-100 dark:border-slate-700">{o.location}</td>
-                <td className="p-4 text-center align-middle font-medium text-base border-b border-blue-100 dark:border-slate-700">{o.exprience}</td>
-                <td className="p-4 text-center align-middle border-b border-blue-100 dark:border-slate-700">
-                  <div className="flex items-center justify-center gap-4">
+                <td className="px-2 py-1 text-center align-middle font-normal text-base border-b border-blue-100 dark:border-slate-700">{o.role}</td>
+                <td className="px-2 py-1 text-center align-middle font-normal text-base border-b border-blue-100 dark:border-slate-700">{o.positions}</td>
+                <td className="px-2 py-1 text-center align-middle font-normal text-base border-b border-blue-100 dark:border-slate-700">{o.location}</td>
+                <td className="px-2 py-1 text-center align-middle font-normal text-base border-b border-blue-100 dark:border-slate-700">{o.exprience}</td>
+                <td className="px-2 py-1 text-center align-middle border-b border-blue-100 dark:border-slate-700">
+                  <div className="flex items-center justify-center gap-2">
                     <button
                       title="Edit"
                       onClick={() => handleEdit(o)}
-                      className="text-blue-600 hover:bg-blue-100 dark:hover:bg-slate-800 rounded-full p-2 transition-colors"
-                      style={{ fontSize: 20 }}
+                      className="text-blue-600 hover:bg-blue-100 dark:hover:bg-slate-800 rounded-full p-1 transition-colors"
+                      style={{ fontSize: 16 }}
                     >
                       ✏️
                     </button>
                     <button
                       title="Delete"
                       onClick={() => handleDelete(o.id)}
-                      className="text-red-600 hover:bg-red-100 dark:hover:bg-slate-800 rounded-full p-2 transition-colors"
-                      style={{ fontSize: 20 }}
+                      className="text-red-600 hover:bg-red-100 dark:hover:bg-slate-800 rounded-full p-1 transition-colors"
+                      style={{ fontSize: 16 }}
                     >
                       🗑️
                     </button>
@@ -216,7 +241,7 @@ const AddOpenings = () => {
       {/* Pagination Controls */}
       <div className="flex justify-between items-center mt-4 gap-4">
         <button
-          className={`px-4 py-2 rounded-lg font-semibold shadow transition-colors ${currentPage === 1 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`px-2 py-1 rounded-lg font-semibold shadow transition-colors ${currentPage === 1 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
           onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
         >
@@ -226,7 +251,7 @@ const AddOpenings = () => {
           Page {currentPage} of {totalPages}
         </span>
         <button
-          className={`px-4 py-2 rounded-lg font-semibold shadow transition-colors ${currentPage === totalPages ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          className={`px-2 py-1 rounded-lg font-semibold shadow transition-colors ${currentPage === totalPages ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
           onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
         >
@@ -241,7 +266,7 @@ const AddOpenings = () => {
             <button className="absolute top-2 right-3 text-2xl" onClick={() => setShowModal(false)}>
               ×
             </button>
-            <h3 className="text-xl font-bold mb-4 px-8 pt-8">{editingId ? "Edit Opening" : "Add Opening"}</h3>
+            <h3 className="text-lg font-bold mb-4 px-8 pt-8">{editingId ? "Edit Opening" : "Add Opening"}</h3>
             <div className="flex-1 overflow-y-auto overflow-x-auto px-8 pb-8" style={{ WebkitOverflowScrolling: 'touch' }}>
               <form onSubmit={handleAddOrEdit} className="space-y-4 min-w-[350px] md:min-w-0" style={{ minWidth: '350px' }}>
                 <div className="min-w-[250px]">

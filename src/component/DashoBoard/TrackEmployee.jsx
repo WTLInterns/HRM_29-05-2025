@@ -53,7 +53,7 @@ const TrackEmployee = () => {
       const subAdminId = user?.id;
       if (subAdminId) {
         axios
-          .get(`http://localhost:8282/api/employee/${subAdminId}/employee/all`)
+          .get(`https://api.managifyhr.com/api/employee/${subAdminId}/employee/all`)
           .then(res => {
             setEmployeeList(res.data || []);
           })
@@ -95,7 +95,7 @@ const TrackEmployee = () => {
       const subadminId = user?.id;
       if (!subadminId) throw new Error("No subadmin session");
       const locRes = await axios.get(
-        `http://localhost:8282/api/location/${subadminId}/employee/${emp.empId}`
+        `https://api.managifyhr.com/api/location/${subadminId}/employee/${emp.empId}`
       );
       if (!locRes.data || !locRes.data.latitude || !locRes.data.longitude) {
         throw new Error("No location data available for this employee");
