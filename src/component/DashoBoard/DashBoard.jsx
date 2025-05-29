@@ -4,7 +4,8 @@ import axios from "axios";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import Attendance from "./Attendance";
 import TrackEmployee from "./TrackEmployee";
-import Openings from "./Openings";
+import AddOpenings from "./AddOpenings";
+import Resume from "./Resume";
 import SalarySheet from "./SalarySheet";
 import SalarySlip from "./SalarySlip";
 import AddEmp from "./AddEmp";
@@ -12,7 +13,7 @@ import ViewAttendance from "./ViewAttendance";
 import { IoIosLogOut, IoIosPersonAdd } from "react-icons/io";
 import { LuNotebookPen } from "react-icons/lu";
 import { MdOutlinePageview, MdKeyboardArrowDown, MdKeyboardArrowRight, MdDashboard } from "react-icons/md";
-import { FaReceipt, FaCalendarAlt, FaRegIdCard, FaExclamationTriangle, FaTimes, FaSignOutAlt, FaChartPie, FaArrowUp, FaArrowDown, FaMoon, FaSun, FaFileAlt, FaBell, FaUserCog } from "react-icons/fa";
+import { FaReceipt, FaCalendarAlt, FaRegIdCard, FaExclamationTriangle, FaTimes, FaSignOutAlt, FaChartPie, FaArrowUp, FaArrowDown, FaMoon, FaSun, FaFileAlt, FaBell, FaUserCog, FaBriefcase } from "react-icons/fa";
 import { BiSolidSpreadsheet } from "react-icons/bi";
 import { HiMenu, HiX } from "react-icons/hi";
 import { useApp } from "../../context/AppContext";
@@ -536,6 +537,7 @@ const Dashboard = () => {
   const toggleCertificatesDropdown = () => {
     setCertificatesDropdownOpen(!certificatesDropdownOpen);
   };
+
   const toggleOpeningsDropdown = () => {
     setOpeningsDropdownOpen(!openingsDropdownOpen);
   };
@@ -598,20 +600,18 @@ const Dashboard = () => {
     // Openings Section with Dropdowns
     {
       label: "Openings",
-      icon: <FaArrowDown className="text-blue-400" />,
+      icon: <FaBriefcase />,
       dropdown: true,
       children: [
         {
-          to: "/dashboard/openings",
-          label: "Add Openings",
-          icon: <FaArrowDown className="text-blue-400" />,
-          state: { activeTab: 'add' }
+          to: "/dashboard/add-openings",
+          label: "Add Opening",
+          icon: <FaArrowDown className="text-blue-400" />
         },
         {
-          to: "/dashboard/openings",
+          to: "/dashboard/resume",
           label: "Check Resume",
-          icon: <FaArrowDown className="text-blue-400" />,
-          state: { activeTab: 'resume' }
+          icon: <FaArrowDown className="text-blue-400" />
         }
       ]
     }
@@ -905,7 +905,8 @@ const Dashboard = () => {
             <Route path="certificates" element={<Certificates />} />
             <Route path="reminders" element={<Reminders />} />
             <Route path="track-employee" element={<TrackEmployee />} />
-<Route path="openings" element={<Openings />} />
+            <Route path="add-openings" element={<AddOpenings />} />
+            <Route path="resume" element={<Resume />} />
             <Route path="*" element={<DashoBoardRouter />} />
           </Routes>
         </div>

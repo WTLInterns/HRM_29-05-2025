@@ -239,8 +239,7 @@ import { Link } from "react-router-dom";
               </Link>
               {/* Check Resume Dropdown */}
               <Link
-                to="/dashboard/openings"
-                state={{ activeTab: 'resume' }}
+                to="/dashboard/resume"
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-blue-700/50 hover:pl-5 transition-all duration-300 text-blue-200 hover:text-white"
                 style={{ cursor: 'pointer' }}
               >

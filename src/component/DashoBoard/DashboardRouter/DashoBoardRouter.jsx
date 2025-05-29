@@ -23,7 +23,7 @@ import Reminders from "../Reminders";
 
 
 
-import Resume from "../Resume";
+// Resume and Openings components removed
 
 const DashoBoardRouter = () => {
   console.log("Dashboard Router Component Rendering");
@@ -40,7 +40,6 @@ const DashoBoardRouter = () => {
         <Route path="expenses" element={<Expenses />} />
         <Route path="reminders" element={<Reminders />} />
         <Route path="leave-notification" element={<LeaveNotification />} />
-        <Route path="resume" element={<Resume />} />
         
         {/* Certificate routes */}
         <Route path="certificates" element={<Certificates />} />
