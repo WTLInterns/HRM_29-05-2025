@@ -2640,7 +2640,7 @@ export default function AddEmp() {
           console.log("User not authenticated, skipping error toast");
         } else {
           toast.error(
-            "Failed to fetch employees: " +
+            "Please Add Employee Details First : " +
               (error.response?.data?.message || error.message)
           );
         }
@@ -3810,7 +3810,10 @@ const handleEditEmp = (employee) => {
                       >
                         <option value="">Select job role</option>
                         <option value="HR">HR</option>
+                        <option value="HR ASSISTANT">HR ASSISTANT</option>
                         <option value="MANAGER">MANAGER</option>
+                        <option value="SALES">SALES</option>
+                        <option value="IT LEAD GENERATION">IT LEAD GENERATION</option>
                         <option value="JAVA FULL STACK DEVELOPER">
                           JAVA FULL STACK DEVELOPER
                         </option>
@@ -3820,9 +3823,6 @@ const handleEditEmp = (employee) => {
                         <option value="SUPERVISOR">SUPERVISOR</option>
                         <option value="DIGITAL MARKETING INTERN">
                           DIGITAL MARKETING INTERN
-                        </option>
-                        <option value="JAVA FULL STACK">
-                          JAVA FULL STACK DEVELOPER
                         </option>
                         <option value="TELECALLER EXCUTIVE">
                           TELECALLER EXECUTIVE
@@ -4561,7 +4561,13 @@ const handleEditEmp = (employee) => {
                       >
                         <option value="">Select JobRole</option>
                         <option value="HR">HR</option>
+                        <option value="HR ASSISTANT">HR ASSISTANT</option>
                         <option value="MANAGER">MANAGER</option>
+                        <option value="SALES">SALES</option>
+                        <option value="IT LEAD GENERATION">IT LEAD GENERATION</option>
+                        <option value="JAVA FULL STACK DEVELOPER">
+                          JAVA FULL STACK DEVELOPER
+                        </option>
                         <option value="MERN STACK DEVELOPER">
                           MERN STACK DEVELOPER
                         </option>
@@ -4569,11 +4575,8 @@ const handleEditEmp = (employee) => {
                         <option value="DIGITAL MARKETING INTERN">
                           DIGITAL MARKETING INTERN
                         </option>
-                        <option value="JAVA FULL STACK">
-                          JAVA FULL STACK DEVELOPER
-                        </option>
                         <option value="TELECALLER EXCUTIVE">
-                          TELECALLER EXCUTIVE
+                          TELECALLER EXECUTIVE
                         </option>
                         <option value="BACK OFFICE">BACK OFFICE</option>
                       </select>

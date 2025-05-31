@@ -65,7 +65,10 @@ const LeaveNotification = () => {
   if (!userFullName && userData?.firstName && userData?.lastName) {
     userFullName = `${userData.firstName} ${userData.lastName}`;
   }
-  // Theme
+  // Theme - Set dark mode by default
+  useEffect(() => {
+    localStorage.setItem('theme', 'dark');
+  }, []);
   const isDarkMode = localStorage.getItem('theme') === 'dark';
   // State
   const [showStatusSummary, setShowStatusSummary] = useState(false);

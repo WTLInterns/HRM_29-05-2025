@@ -56,9 +56,12 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
-        // Use the same SUBADMIN_ID logic as Expenses.jsx
-        const SUBADMIN_ID = 2;
-        const API_BASE = `https://api.managifyhr.com/api/expenses/${SUBADMIN_ID}`;
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+          setExpenses([]);
+          return;
+        }
+        const API_BASE = `https://api.managifyhr.com/api/expenses/${user.id}`;
         const res = await axios.get(`${API_BASE}/getAll`);
         setExpenses(res.data || []);
       } catch (err) {
@@ -72,9 +75,13 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    // Calculate total expenses whenever expenses change
-    const total = expenses.reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
-    setTotalExpenses(total);
+    // Show 0 for new users (no expenses) and calculate total only when expenses exist
+    if (expenses && expenses.length > 0) {
+      const total = expenses.reduce((sum, exp) => sum + (parseFloat(exp.amount) || 0), 0);
+      setTotalExpenses(total);
+    } else {
+      setTotalExpenses(0);
+    }
   }, [expenses]);
   const navigate = useNavigate();
   const [reminders, setReminders] = useState([]);
