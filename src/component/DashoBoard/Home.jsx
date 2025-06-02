@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { useApp } from "../../context/AppContext";
 import axios from "axios";
 import "./animations.css";
@@ -210,48 +211,12 @@ const Home = () => {
   );
 };
 
-import { Link } from "react-router-dom";
 
-// ...rest of the Home component code
-
-<div style={{ display: 'flex' }}>
-  {/* Sidebar Navigation for Openings */}
-  <div className={`fixed left-0 top-0 h-full w-64 bg-slate-900 shadow-lg flex flex-col pt-8 text-white z-40`}>
-    <nav className="flex-1 px-4">
-      <ul className="space-y-1">
-        {/* Openings Section with Dropdowns */}
-        <li className="mb-2">
-          <div className="flex flex-col">
-            <span className="text-lg font-semibold px-4 py-2 mb-2 bg-blue-800/70 rounded-lg flex items-center gap-2">
-              <FaBriefcase className="text-blue-300" />
-              Openings
-            </span>
-            <div className="ml-4 flex flex-col gap-1">
-              {/* Add Openings Dropdown */}
-              <Link
-                to="/dashboard/openings"
-                state={{ activeTab: 'add' }}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-blue-700/50 hover:pl-5 transition-all duration-300 text-blue-200 hover:text-white"
-                style={{ cursor: 'pointer' }}
-              >
-                <FaArrowDown className="text-blue-400" />
-                Add Openings
-              </Link>
-              {/* Check Resume Dropdown */}
-              <Link
-                to="/dashboard/resume"
-                className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-blue-700/50 hover:pl-5 transition-all duration-300 text-blue-200 hover:text-white"
-                style={{ cursor: 'pointer' }}
-              >
-                <FaArrowDown className="text-blue-400" />
-                Check Resume
-              </Link>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </nav>
-  </div>
+      
+               
+             
+             
+          
   {/* Main Content Area */}
   <div style={{ marginLeft: '16rem', flex: 1 }}>
     <div className="mt-6 flex justify-center">
@@ -261,6 +226,6 @@ import { Link } from "react-router-dom";
     </div>
     {/* ...rest of the original Home content goes here... */}
   </div>
-</div>
+
 
 export default Home; 
