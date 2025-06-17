@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaEnvelope, FaKey, FaArrowLeft, FaSpinner } from "react-icons/fa";
 import "../DashoBoard/animations.css";
@@ -90,20 +90,6 @@ const ForgotPassword = () => {
         <div className="absolute top-[40%] right-[30%] w-64 h-64 rounded-full bg-sky-600/20 animate-pulse-slow blur-3xl"></div>
       </div>
 
-      {/* Toast Container */}
-      <ToastContainer 
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
-
       <div className="max-w-md w-full mx-4 relative">
         {/* Logo/Header */}
         <div className="flex flex-col items-center mb-8">
@@ -184,4 +170,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword; 
+export default ForgotPassword;

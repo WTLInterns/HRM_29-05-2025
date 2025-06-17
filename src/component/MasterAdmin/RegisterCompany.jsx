@@ -28,6 +28,7 @@ const RegisterCompany = () => {
   const [signaturePreview, setSignaturePreview] = useState(null);
   const [stampPreview, setStampPreview] = useState(null);
 
+  // Add packageType and customCount to initialFormState
   const initialFormState = {
     id: Date.now(),
     name: "",
@@ -44,10 +45,35 @@ const RegisterCompany = () => {
     status: "Active",
     gstno: "",
     cinNo: "",
-    companyUrl: ""
+    companyUrl: "",
+    packageType: "10", // default value
+    customCount: "",   // only used if packageType is "custom"
   };
 
   const [formData, setFormData] = useState(initialFormState);
+
+  // Utility function to normalize packageType and status
+  const normalizePackageType = (pkgType) => {
+    if (!pkgType) return "10";
+    if (typeof pkgType === "number") pkgType = String(pkgType);
+    if (typeof pkgType === "string") {
+      const lower = pkgType.toLowerCase();
+      if (lower.includes("custom")) return "custom";
+      if (lower.includes("10")) return "10";
+      if (lower.includes("15")) return "15";
+      if (lower.includes("30")) return "30";
+      if (lower.includes("40")) return "40";
+    }
+    return "10";
+  };
+  const normalizeStatus = (status) => {
+    if (!status) return "Active";
+    if (typeof status === "string") {
+      if (status.toLowerCase() === "active") return "Active";
+      if (status.toLowerCase() === "inactive") return "Inactive";
+    }
+    return "Active";
+  };
 
   useEffect(() => {
     if (isEditMode) {
@@ -65,12 +91,14 @@ const RegisterCompany = () => {
           gstno: companyToEdit.gstno,
           cinNo: companyToEdit.cinNo || companyToEdit.cinno || '',
           companyUrl: companyToEdit.companyUrl || companyToEdit.companyurl || '',
-          status: companyToEdit.status,
+          status: normalizeStatus(companyToEdit.status),
           logo: companyToEdit.logo || companyToEdit.companylogo,
           signature: companyToEdit.signature,
           stampImage: companyToEdit.stampImg,
           hasSignature: !!companyToEdit.signature,
-          hasStamp: !!companyToEdit.stampImg
+          hasStamp: !!companyToEdit.stampImg,
+          packageType: normalizePackageType(companyToEdit.packageType),
+          customCount: normalizePackageType(companyToEdit.packageType) === "custom" ? (companyToEdit.packageCount || "") : ""
         };
         
         console.log('Loading company data for edit:', mappedData);
@@ -92,12 +120,14 @@ const RegisterCompany = () => {
     }
   }, [isEditMode]);
 
+  // Update handleChange to reset customCount if packageType changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value
-    });
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+      ...(name === "packageType" && value !== "custom" ? { customCount: "" } : {})
+    }));
   };
   
   const handleFileChange = (e, fileType) => {
@@ -181,6 +211,15 @@ const RegisterCompany = () => {
           formDataToSend.append("stampImg", formData.stampImage);
         }
         
+        // Add packageType and customCount to the FormData
+        let pkgType = normalizePackageType(formData.packageType);
+        formDataToSend.append("packageType", pkgType);
+        if (pkgType === "custom") {
+          formDataToSend.append("customCount", formData.customCount);
+        }
+        // Always send status as 'Active' or 'Inactive'
+        formDataToSend.append("status", normalizeStatus(formData.status));
+        
         const response = await fetch(apiUrl, {
           method: "PUT",
           body: formDataToSend
@@ -216,6 +255,10 @@ const RegisterCompany = () => {
         formDataToSend.append("companyurl", formData.companyUrl);
         formDataToSend.append("address", formData.address);
         formDataToSend.append("status", formData.status);
+        formDataToSend.append("packageType", normalizePackageType(formData.packageType));
+        if (normalizePackageType(formData.packageType) === "custom") {
+          formDataToSend.append("customCount", formData.customCount);
+        }
         
         // Append the files if they exist
         if (formData.logo) {
@@ -299,9 +342,9 @@ setSuccessMessage("Company registered successfully! Please send  Login Details t
   };
 
   return (
-    <div className="p-4 md:p-6 bg-slate-800/90 backdrop-blur-md rounded-lg shadow-lg border border-slate-700 animate-fadeIn text-gray-100">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 bg-blue-900/50 rounded-full text-blue-400">
+    <div className="p-2 md:p-4 lg:p-6 bg-slate-800/90 backdrop-blur-md rounded-lg shadow-lg border border-slate-700 animate-fadeIn text-gray-100 w-full max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-center gap-3 mb-6">
+        <div className="p-3 bg-blue-900/50 rounded-full text-blue-400 self-start md:self-auto">
           <FaBuilding className="text-xl md:text-2xl" />
         </div>
         <h2 className="text-xl md:text-2xl font-bold">{isEditMode ? "Update Company" : "Register Company"}</h2>
@@ -317,7 +360,7 @@ setSuccessMessage("Company registered successfully! Please send  Login Details t
         )}
       </div>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Contact Person Info */}
           <div className="space-y-4 bg-slate-900/30 p-4 rounded-lg border border-slate-700 shadow-sm">
@@ -468,6 +511,45 @@ setSuccessMessage("Company registered successfully! Please send  Login Details t
                 <option value="Inactive">Inactive</option>
               </select>
             </div>
+
+            {/* New Package Type and Custom Count Fields */}
+            <div className="space-y-2">
+              <label htmlFor="packageType" className="block text-sm font-medium">
+                Package Type <span className="text-red-400">*</span>
+              </label>
+              <select
+                id="packageType"
+                name="packageType"
+                value={formData.packageType}
+                onChange={handleChange}
+                required
+                className="block w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+              >
+                <option value="10">10 Employees</option>
+                <option value="15">15 Employees</option>
+                <option value="30">30 Employees</option>
+                <option value="40">40 Employees</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+            {formData.packageType === "custom" && (
+              <div className="space-y-2">
+                <label htmlFor="customCount" className="block text-sm font-medium">
+                  Enter Package Count <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="number"
+                  id="customCount"
+                  name="customCount"
+                  min={1}
+                  value={formData.customCount}
+                  onChange={handleChange}
+                  required
+                  className="block w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+                  placeholder="Enter employee count"
+                />
+              </div>
+            )}
           </div>
           
           {/* Contact Info */}

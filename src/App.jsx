@@ -1,4 +1,5 @@
 import React, { Component, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import RouterNavbar from "./Router/RouterNavbar";
 import { AppProvider, useApp } from "./context/AppContext";
@@ -43,7 +44,7 @@ class ErrorBoundary extends Component {
 // Theme wrapper component to apply theme consistently
 const ThemeWrapper = ({ children }) => {
   const { isDarkMode } = useApp();
-  
+  const location = useLocation();
   useEffect(() => {
     // Apply the appropriate theme class to the html element
     if (isDarkMode) {
@@ -54,6 +55,27 @@ const ThemeWrapper = ({ children }) => {
       document.documentElement.style.colorScheme = 'light';
     }
   }, [isDarkMode]);
+
+  useEffect(() => {
+    // Dismiss all toasts on route change to prevent cross-page messages
+    if (window.toastify) {
+      window.toastify.dismiss();
+    }
+    if (window.ReactToastify) {
+      window.ReactToastify.toast.dismiss();
+    }
+    if (window.toast) {
+      window.toast.dismiss && window.toast.dismiss();
+    }
+    if (typeof window !== 'undefined' && window.document) {
+      const containers = document.querySelectorAll('.Toastify__toast-container');
+      containers.forEach(container => {
+        if (container && container.parentNode) {
+          container.parentNode.removeChild(container);
+        }
+      });
+    }
+  }, [location]);
 
   return (
     <div className={isDarkMode ? 'dark-mode' : 'light-mode'}>
@@ -66,7 +88,6 @@ const ThemeWrapper = ({ children }) => {
 const App = () => {
   return (
     <div className="min-h-screen transition-all duration-300">
-      <ToastContainer />
       <ErrorBoundary>
         <AppProvider>
           <ThemeWrapper>

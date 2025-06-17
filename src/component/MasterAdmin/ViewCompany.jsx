@@ -553,4 +553,4 @@ const ViewCompany = () => {
   );
 };
 
-export default ViewCompany; 
+export default ViewCompany;

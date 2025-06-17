@@ -308,9 +308,11 @@ export const AppProvider = ({ children }) => {
       
       // Fetch employees from the backend API with the dynamic SubAdmin ID
       const response = await axios.get(`https://api.managifyhr.com/api/employee/${subAdminId}/employee/all`);
-      const employeesData = response.data;
-      
-      // Update state with fetched employees 
+      let employeesData = response.data;
+      // Fix: Ensure employeesData is always an array
+      if (!Array.isArray(employeesData)) {
+        employeesData = [];
+      }
       setEmp(employeesData);
       calculateStats(employeesData);
       setLoading(false);
@@ -447,10 +449,6 @@ export const AppProvider = ({ children }) => {
       document.documentElement.classList.remove("dark");
       document.documentElement.style.colorScheme = "light";
     }
-
-    // Force re-render by triggering a state update
-    setLoading(prev => !prev);
-    setTimeout(() => setLoading(prev => !prev), 10);
   };
 
   // Apply theme on initial load

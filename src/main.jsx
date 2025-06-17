@@ -1,3 +1,10 @@
+import "./polyfills";
+
+// Polyfill for Node.js global variable in browser
+if (typeof global === "undefined") {
+  window.global = window;
+}
+
 // import './polyfills';
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
