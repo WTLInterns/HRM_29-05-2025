@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -128,7 +128,53 @@ export const AppProvider = ({ children }) => {
       return null;
     }
   });
-  
+
+
+
+
+
+
+  //This is for Active and Inactive Status for Subadmin
+
+  const navigate = useNavigate();
+  const pollingRef = useRef();
+
+  // --- Forced Logout Polling for SubAdmin ---
+  // (navigate declared only once at the top of AppProvider)
+  useEffect(() => {
+    if (user && (user.role === "SUBADMIN" || user.role === "SUB_ADMIN")) {
+      const pollStatus = async () => {
+        try {
+          // Replace with your actual API endpoint for fetching subadmin by email
+          const response = await axios.get(
+            `http://localhost:8282/api/subadmin/subadmin-by-email/${user.email}`
+          );
+          const latestStatus = response.data.status;
+          if (latestStatus && latestStatus.toLowerCase() === "inactive") {
+            // Force logout
+            localStorage.removeItem("user");
+            setUser(null);
+            toast.error("Your account has been deactivated by the Master Admin.");
+            navigate("/login");
+          }
+        } catch (err) {
+          // Optionally handle error (e.g., network issue)
+        }
+      };
+      pollingRef.current = setInterval(pollStatus, 15000); // 15 seconds
+      pollStatus(); // Run once immediately
+      return () => clearInterval(pollingRef.current);
+    }
+  }, [user, navigate]);
+  // --- End Forced Logout Polling ---
+
+   //Till Here Active and Inactive Status
+
+
+
+
+
+
   const [emp, setEmp] = useState(STATIC_EMPLOYEES);
   const [role, setRole] = useState(user?.role || "");
   const [loading, setLoading] = useState(false);
@@ -146,7 +192,6 @@ export const AppProvider = ({ children }) => {
     profitLoss: 1000000 - STATIC_EMPLOYEES.reduce((sum, employee) => sum + (parseFloat(employee.salary) || 0), 0)
   });
 
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {

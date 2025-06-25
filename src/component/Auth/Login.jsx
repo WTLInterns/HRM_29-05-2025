@@ -501,6 +501,23 @@ const Login = () => {
         const data = response.data;
         console.log("Subadmin login response:", data);
         if (data && data.role === "SUB_ADMIN") {
+          
+          
+          
+          
+          
+          //This is for subadmin login for active and inactive Account from masterAdmin
+          // Check status before allowing login
+          if (data.status && data.status.toLowerCase() === "inactive") {
+            setError("Your account is inactive. Please contact the Master Admin.");
+            toast.error("Your account is inactive. Please contact the Master Admin.");
+            setLoading(false);
+            setIsSubmitting(false);
+            return;
+          }
+
+
+          
           userData = { ...data, role: "SUBADMIN" };
           console.log("Subadmin login successful:", userData);
         } else {

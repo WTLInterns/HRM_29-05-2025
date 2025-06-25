@@ -88,7 +88,7 @@ export default function AddEmp() {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData && userData.id) {
       setSubadminId(userData.id);
-      console.log("Found user ID in localStorage:", userData.id);
+      console.log("Found user ID in localStorage:", userData.id); 
     } else {
       console.log("No user data found in localStorage or missing ID");
     }
@@ -1110,7 +1110,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       />
                     </div>
 
@@ -1133,7 +1133,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       />
                     </div>
 
@@ -1157,7 +1157,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       />
                     </div>
 
@@ -1180,7 +1180,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       />
                     </div>
 
@@ -1203,7 +1203,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       />
                     </div>
 
@@ -1226,7 +1226,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       />
                     </div>
 
@@ -1248,7 +1248,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       >
                         <option value="">Select education</option>
                         <option value="hsc">HSC</option>
@@ -1275,7 +1275,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       >
                         <option value="">Select blood group</option>
                         <option value="a+">A+</option>
@@ -1303,7 +1303,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       >
                         <option value="">Select job role</option>
                         <option value="HR">HR</option>
@@ -1346,7 +1346,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       >
                         <option value="">Select gender</option>
                         <option value="male">Male</option>
@@ -1374,7 +1374,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       ></textarea>
                     </div>
 
@@ -1396,7 +1396,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       >
                         <option value="">Select department</option>
                         <option value="Engineering (Development)">
@@ -1507,7 +1507,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       >
                         <option value="">Select status</option>
                         <option value="Active">Active</option>
@@ -1875,7 +1875,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       />
                     </div>
                     <div className="space-y-2">
@@ -1897,7 +1897,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       />
                     </div>
                     <div className="space-y-2">
@@ -1920,7 +1920,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white placeholder-gray-400"
                             : "bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 border`}
-                        required
+                        // required
                       />
                     </div>
                     <div className="space-y-2">
@@ -2246,7 +2246,7 @@ const handleEditEmp = (employee) => {
                             ? "bg-slate-700 border-slate-600 text-white"
                             : "bg-gray-50 border-gray-300 text-gray-900"
                         } rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                        required
+                        // required
                       >
                         <option value="">Select status</option>
                         <option value="Active">Active</option>
