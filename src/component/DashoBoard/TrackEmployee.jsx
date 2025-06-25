@@ -107,7 +107,7 @@ const TrackEmployee = () => {
       const subAdminId = user?.id;
       if (subAdminId) {
         axios
-          .get(`http://localhost:8282/api/employee/${subAdminId}/employee/all`)
+          .get(`https://admin.managifyhr.com/api/employee/${subAdminId}/employee/all`)
           .then(res => {
             setEmployeeList(res.data || []);
           })
@@ -150,7 +150,7 @@ const TrackEmployee = () => {
       if (!subadminId) throw new Error("No subadmin session");
       // Use the correct endpoint for location fetch
       const locRes = await axios.get(
-        `http://localhost:8282/api/employee/${subadminId}/employee/${emp.empId}/location`
+        `https://admin.managifyhr.com/api/employee/${subadminId}/employee/${emp.empId}/location`
       );
       if (!locRes.data || !locRes.data.latitude || !locRes.data.longitude) {
         throw new Error("No location data available for this employee");
@@ -197,7 +197,7 @@ const TrackEmployee = () => {
     }
 
     // Setup STOMP client
-    const sock = new SockJS("http://localhost:8282/ws");
+    const sock = new SockJS("https://admin.managifyhr.com/ws");
     const stompClient = new Client({
       webSocketFactory: () => sock,
       debug: (str) => console.log("STOMP:", str),
