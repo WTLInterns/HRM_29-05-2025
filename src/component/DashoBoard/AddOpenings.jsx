@@ -74,7 +74,7 @@ const AddOpenings = () => {
   const fetchOpenings = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`https://api.managifyhr.com/api/openings/${subadminId}`);
+      const res = await axios.get(`http://localhost:8282/api/openings/${subadminId}`);
       setOpenings(res.data || []);
     } catch {
       setOpenings([]);
@@ -92,10 +92,10 @@ const AddOpenings = () => {
     setLoading(true);
     try {
       if (editingId) {
-        await axios.put(`https://api.managifyhr.com/api/openings/${subadminId}/${editingId}`, form);
+        await axios.put(`http://localhost:8282/api/openings/${subadminId}/${editingId}`, form);
         toast.success("Opening updated successfully!");
       } else {
-        await axios.post(`https://api.managifyhr.com/api/openings/${subadminId}`, form);
+        await axios.post(`http://localhost:8282/api/openings/${subadminId}`, form);
         toast.success("Opening added successfully!");
       }
       setShowModal(false);
@@ -144,7 +144,7 @@ const AddOpenings = () => {
     if (!deleteTargetId) return;
     setLoading(true);
     try {
-      await axios.delete(`https://api.managifyhr.com/api/openings/${subadminId}/${deleteTargetId}`);
+      await axios.delete(`http://localhost:8282/api/openings/${subadminId}/${deleteTargetId}`);
       toast.success("Opening deleted successfully!");
       fetchOpenings();
     } catch (error) {
