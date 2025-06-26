@@ -9,9 +9,9 @@ export const useApp = () => {
   return useContext(AppContext);
 };
 
-// Removed all axios defaults and configurations
+// Removed all axios defaults and configurations  
 
-// Mock static employee data
+// Mock static employee data   
 const STATIC_EMPLOYEES = [
   {
     empId: 1,
@@ -147,7 +147,7 @@ export const AppProvider = ({ children }) => {
         try {
           // Replace with your actual API endpoint for fetching subadmin by email
           const response = await axios.get(
-            `https://admin.managifyhr.com/api/subadmin/subadmin-by-email/${user.email}`
+            `https://api.managifyhr.com/api/subadmin/subadmin-by-email/${user.email}`
           );
           const latestStatus = response.data.status;
           if (latestStatus && latestStatus.toLowerCase() === "inactive") {
@@ -352,7 +352,7 @@ export const AppProvider = ({ children }) => {
       console.log('Fetching employees for SubAdmin ID:', subAdminId);
       
       // Fetch employees from the backend API with the dynamic SubAdmin ID
-      const response = await axios.get(`https://admin.managifyhr.com/api/employee/${subAdminId}/employee/all`);
+      const response = await axios.get(`https://api.managifyhr.com/api/employee/${subAdminId}/employee/all`);
       let employeesData = response.data;
       // Fix: Ensure employeesData is always an array
       if (!Array.isArray(employeesData)) {

@@ -28,7 +28,7 @@ const Reminders = () => {
       const subadminId = getSubadminId();
       if (!subadminId) return;
 
-      const response = await axios.get(`https://admin.managifyhr.com/api/reminders/${subadminId}`);
+      const response = await axios.get(`https://api.managifyhr.com/api/reminders/${subadminId}`);
       setReminders(response.data);
     } catch (error) {
       console.error('Error fetching reminders:', error);
@@ -71,11 +71,11 @@ const Reminders = () => {
           id: selectedReminder.id
         };
         console.log('Updating reminder:', reminderData); // Debug log
-        await axios.put(`https://admin.managifyhr.com/api/reminders/${selectedReminder.id}`, reminderData);
+        await axios.put(`https://api.managifyhr.com/api/reminders/${selectedReminder.id}`, reminderData);
         toast.success('Reminder updated successfully');
       } else {
         console.log('Creating reminder:', reminderData); // Debug log
-        await axios.post('https://admin.managifyhr.com/api/reminders', reminderData);
+        await axios.post('https://api.managifyhr.com/api/reminders', reminderData);
         toast.success('Reminder added successfully');
       }
       setIsEditing(false);
@@ -93,7 +93,7 @@ const Reminders = () => {
   const handleDeleteReminder = async (reminderId) => {
     try {
       console.log('Deleting reminder with ID:', reminderId); // Debug log
-      await axios.delete(`https://admin.managifyhr.com/api/reminders/${reminderId}`);
+      await axios.delete(`https://api.managifyhr.com/api/reminders/${reminderId}`);
       toast.success('Reminder deleted successfully');
       fetchReminders();
     } catch (error) {
